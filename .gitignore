@@ -1,0 +1,5 @@
+.env
+logs/
+raspberryPi/
+node_modules/
+example.py

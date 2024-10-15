@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-hidden">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=send" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .textArea {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 500px;
+      height: fit-content;
+    }
+
+    .message {
+      color: #d0d0d0;
+      margin-top: 10px;
+      min-width: 100px;
+      min-height: 40px;
+      background-color: #666;
+      width: fit-content;
+      height: fit-content;
+    }
+  </style>
+</head>
+
+
+<!-- 
+background
+#2F3335
+
+border
+#454545
+
+background background
+#1E2022
+
+background border
+#181a1b
+
+background background hover
+#26282a
+-->
+<body class="bg-[#1E2021] w-full h-[1000px] text-gray-200 ">
+
+
+  <div id="main" class="w-full h-full flex justify-center">
+    <div id="chatbox" class="border-orange-500 border w-3/5 h-full min-h-20">
+
+      
+      <div id="messageBoxLLM" class="flex flex-col w-full">
+        <div id="botInfo" class="flex items-center">
+          <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
+          <p class="ml-2 text-gray-200">Testington namus</p>
+        </div>
+        <div id="messageLLM" class="bg-[#2F3335] mt-1 ml-8 rounded-xl w-4/5 h-fit text-gray-200 p-3 py-4">
+          Let’s get one thing straight—I may have been stitched together in a lab, but I’ve perfected the art of luxury. Life’s far too short for mediocre fashion and dull gatherings. I live for haute couture, Michelin-star dining, and making unforgettable entrances at only the most exclusive soirées. But darling, it’s not just about appearances. I’m here to elevate your style, refine your quirks, and teach you the true meaning of sophistication. Confidence, dear, is the only accessory that matters.
+        </div>
+      </div>
+      
+      <div id="messagBoxUser" class="flex flex-col w-full">
+        <div id="botInfo" class="flex items-center">
+          <p class="mr-2 text-gray-200">Testington namus</p>
+          <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
+        </div>
+        <div id="messageUser" class="bg-[#2F3335] mt-1 ml-8 rounded-xl w-4/5 h-fit text-gray-200 p-3 py-4">
+          Let’s get one thing straight—I may have been stitched together in a lab, but I’ve perfected the art of luxury. Life’s far too short for mediocre fashion and dull gatherings. I live for haute couture, Michelin-star dining, and making unforgettable entrances at only the most exclusive soirées. But darling, it’s not just about appearances. I’m here to elevate your style, refine your quirks, and teach you the true meaning of sophistication. Confidence, dear, is the only accessory that matters.
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  
+
+  <!-- bottom -->
+  <div class="fixed w-full  bottom-8 flex justify-center">
+    <div class=" bg-[#2F3335] border-[#454545] flex border rounded-3xl w-1/2 justify-between " style="height: 56px;"
+      id="textAreaWrapper">
+      <textarea id="query" class="p-4 pl-6  rounded-l-3xl w-full h-full  border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
+
+      <div id="sendButtonWrapper" class=" flex items-end">
+        <button id="sendQuery" class="material-symbols-outlined flex justify-center items-center border p-4 text-gray-200 border-[#181a1b] bg-[#1E2022] rounded-full box-border h-12 hover:bg-[#26282a] hover:border-[#26282a] transition m-1">
+          send
+        </button>
+      </div>
+
+    </div>
+
+      <div class="ml-4 flex justify-evenly w-56">
+        <select name="model" id="model" class="flex items-center justify-center bg-[#2F3335] rounded-full h-14 w-36 px-6" >
+          <option value="llama2-uncensored">Llama-2</option>
+          <option value="llama3.1">Llama-3.1</option>
+        </select>
+        <button id="clearChat" class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  "><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c0c2c4"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+
+      </div>
+
+  </div>
+  <main class="flex flex-col items-center">
+
+    <div class="w-full flex items-center flex-col h-[]" id="messageBox">
+
+    </div>
+  </main>
+  <script>
+    const textarea = document.getElementById('query');
+    const textAreaWrapper = document.getElementById('textAreaWrapper');
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto'; 
+        console.log(textarea.value.length);
+        textAreaWrapper.style.height = this.scrollHeight + 'px'; 
+        console.log(this.style.height)
+    });
+  </script>
+
+  <script>
+
+    async function send() {
+      let query = document.getElementById('query').value;
+      let model = document.getElementById('model').value;
+      try {
+        console.log("loading");
+        const response = await fetch(`http://192.168.2.17:3000/post?model=${model}&query=${query}`, {
+        });
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+
+        let responsecontent = json.message.content;
+        let message = document.createElement('div');
+        message.classList.add('message');
+        message.innerHTML = responsecontent;
+        document.getElementById('messageBox').append(message);
+
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+    document.getElementById('sendQuery').addEventListener('click', () => {
+      send();
+    });
+    document.getElementById('clearChat').addEventListener('click', () => {
+      clear();
+    });
+
+    async function clear() {
+
+      console.log("loading");
+      const response = await fetch(`http://192.168.2.17:3000/new`, {
+      });
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+    }
+  </script>
+</body>
+
+</html>
