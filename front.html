@@ -63,7 +63,7 @@ background background hover
         </div>
       </div>
       
-      <div id="messagBoxUser" class="flex flex-col w-full">
+      <div id="messagBoxUser" class="flex flex-col w-full items-end">
         <div id="botInfo" class="flex items-center">
           <p class="mr-2 text-gray-200">Testington namus</p>
           <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
@@ -82,8 +82,7 @@ background background hover
   <div class="fixed w-full  bottom-8 flex justify-center">
     <div class=" bg-[#2F3335] border-[#454545] flex border rounded-3xl w-1/2 justify-between " style="height: 56px;"
       id="textAreaWrapper">
-      <textarea id="query" class="p-4 pl-6  rounded-l-3xl w-full h-full  border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
-
+      <textarea id="query" class="p-4 pl-6  rounded-l-3xl w-full   border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
       <div id="sendButtonWrapper" class=" flex items-end">
         <button id="sendQuery" class="material-symbols-outlined flex justify-center items-center border p-4 text-gray-200 border-[#181a1b] bg-[#1E2022] rounded-full box-border h-12 hover:bg-[#26282a] hover:border-[#26282a] transition m-1">
           send
@@ -112,10 +111,12 @@ background background hover
     const textarea = document.getElementById('query');
     const textAreaWrapper = document.getElementById('textAreaWrapper');
     textarea.addEventListener('input', function () {
-        this.style.height = 'auto'; 
-        console.log(textarea.value.length);
-        textAreaWrapper.style.height = this.scrollHeight + 'px'; 
-        console.log(this.style.height)
+      this.style.height = 'fit'
+      console.log(textarea.offsetHeight);
+      textAreaWrapper.style.height = this.scrollHeight + 'px'; 
+      if(textarea.value.length ==  0){
+        textAreaWrapper.style.height = "56px";
+      }
     });
   </script>
 
