@@ -26,6 +26,7 @@
       width: fit-content;
       height: fit-content;
     }
+
   </style>
 </head>
 
@@ -58,8 +59,8 @@ background background hover
           <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
           <p class="ml-2 text-gray-200">Testington namus</p>
         </div>
-        <div id="messageLLM" class="bg-[#2F3335] mt-1 ml-8 rounded-xl w-4/5 h-fit text-gray-200 p-3 py-4">
-          Let’s get one thing straight—I may have been stitched together in a lab, but I’ve perfected the art of luxury. Life’s far too short for mediocre fashion and dull gatherings. I live for haute couture, Michelin-star dining, and making unforgettable entrances at only the most exclusive soirées. But darling, it’s not just about appearances. I’m here to elevate your style, refine your quirks, and teach you the true meaning of sophistication. Confidence, dear, is the only accessory that matters.
+        <div id="messageLLM" class="bg-[#2F3335] mt-1 ml-8 rounded-xl  max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis culpa magnam sapiente aperiam alias soluta a ducimus molestiae facere, vel saepe repudiandae asperiores omnis quod tenetur doloremque mollitia aut itaque?
         </div>
       </div>
       
@@ -68,10 +69,10 @@ background background hover
           <p class="mr-2 text-gray-200">Testington namus</p>
           <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
         </div>
-        <div id="messageUser" class="bg-[#2F3335] mt-1 ml-8 rounded-xl w-4/5 h-fit text-gray-200 p-3 py-4">
-          Let’s get one thing straight—I may have been stitched together in a lab, but I’ve perfected the art of luxury. Life’s far too short for mediocre fashion and dull gatherings. I live for haute couture, Michelin-star dining, and making unforgettable entrances at only the most exclusive soirées. But darling, it’s not just about appearances. I’m here to elevate your style, refine your quirks, and teach you the true meaning of sophistication. Confidence, dear, is the only accessory that matters.
+        <div id="messageUser" class="bg-[#2F3335] mt-1 mr-8 rounded-xl  max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4 text-end">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis culpa magnam sapiente aperiam alias soluta a ducimus molestiae facere, vel saepe repudiandae asperiores omnis quod tenetur doloremque mollitia aut itaque?
         </div>
-      </div>
+      </div>  
 
 
     </div>
@@ -101,6 +102,12 @@ background background hover
       </div>
 
   </div>
+
+
+  <!-- snackbar area -->
+    
+
+  <!-- Message box -->
   <main class="flex flex-col items-center">
 
     <div class="w-full flex items-center flex-col h-[]" id="messageBox">
@@ -125,8 +132,12 @@ background background hover
     async function send() {
       let query = document.getElementById('query').value;
       let model = document.getElementById('model').value;
+
+      // Show message in front ed 
+      addMessageUser(query);
+
+      // Call api to retrieve return message
       try {
-        console.log("loading");
         const response = await fetch(`http://192.168.2.17:3000/post?model=${model}&query=${query}`, {
         });
         if (!response.ok) {
@@ -145,6 +156,10 @@ background background hover
         console.error(error.message);
       }
     }
+
+
+
+
     document.getElementById('sendQuery').addEventListener('click', () => {
       send();
     });
@@ -153,7 +168,6 @@ background background hover
     });
 
     async function clear() {
-
       console.log("loading");
       const response = await fetch(`http://192.168.2.17:3000/new`, {
       });
@@ -161,6 +175,52 @@ background background hover
         throw new Error(`Response status: ${response.status}`);
       }
     }
+
+    let profilePic = './profilePic.jpg'
+    function addMessageUser(text){
+      let messageWrapper = document.createElement('div');
+      messageWrapper.classList = 'flex flex-col w-full items-end';
+
+      let messageUserInfo = document.createElement('div');
+      messageUserInfo.classList = `flex items-center`;
+
+      messageUserInfo.innerHTML = `
+      <p class="mr-2 text-gray-200">Testington namus</p>
+      <img src="${profilePic}" class="w-10 h-10 rounded-full bg-cover" alt="">
+      `
+
+      let messageDiv = document.createElement('div');
+      messageDiv.classList = 'bg-[#2F3335] mt-1 mr-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4 text-end'
+      messageDiv.innerHTML = text;
+
+      messageWrapper.append(messageUserInfo);
+      messageWrapper.append(messageDiv);
+
+      document.getElementById('chatbox').append(messageWrapper);
+    }
+
+    function addMessageBot(text){
+      let messageWrapper = document.createElement('div');
+      messageWrapper.classList = 'flex flex-col w-full';
+
+      let messageBotInfo = document.createElement('div');
+      messageBotInfo.classList = `flex items-center`;
+
+      messageBotInfo.innerHTML = `
+      <img src="${profilePic}" class="w-10 h-10 rounded-full bg-cover" alt="">
+      <p class="ml-2 text-gray-200">Testington namus</p>
+      `
+
+      let messageDiv = document.createElement('div');
+      messageDiv.classList = 'bg-[#2F3335] mt-1 ml-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4'
+      messageDiv.innerHTML = text;
+
+      messageWrapper.append(messageBotInfo);
+      messageWrapper.append(messageDiv);
+
+      document.getElementById('chatbox').append(messageWrapper);
+    }
+    addMessageBot("thas end ist near");
   </script>
 </body>
 
