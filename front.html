@@ -6,32 +6,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=send" />
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=send" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .textArea {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      width: 500px;
-      height: fit-content;
+    .specialArea{
+      width: 100%;
+      background: linear-gradient(#1E2021, #1e202100);
+      height: 70px;
+      margin-bottom: -70px;
+      z-index: 1;
+    }
+    .specialAreaBottom{
+      width: 100%;
+      background: linear-gradient(#1e202100,#1E2021);
+      height: 70px;
+      margin-top: -70px;
+      z-index: 1;
     }
 
-    .message {
-      color: #d0d0d0;
-      margin-top: 10px;
-      min-width: 100px;
-      min-height: 40px;
-      background-color: #666;
-      width: fit-content;
-      height: fit-content;
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
     }
 
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #1E2021;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #26282a;
+      border-radius: 10px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #292a2c;
+    }
   </style>
 </head>
 
 
-<!-- 
+<!--
 background
 #2F3335
 
@@ -46,182 +64,201 @@ background border
 
 background background hover
 #26282a
--->
+ -->
 <body class="bg-[#1E2021] w-full h-[1000px] text-gray-200 ">
 
 
-  <div id="main" class="w-full h-full flex justify-center">
-    <div id="chatbox" class="border-orange-500 border w-3/5 h-full min-h-20">
+<div id="main" class="w-full h-full flex justify-start flex-col items-center">
 
-      
-      <div id="messageBoxLLM" class="flex flex-col w-full">
-        <div id="botInfo" class="flex items-center">
-          <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
-          <p class="ml-2 text-gray-200">Testington namus</p>
-        </div>
-        <div id="messageLLM" class="bg-[#2F3335] mt-1 ml-8 rounded-xl  max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis culpa magnam sapiente aperiam alias soluta a ducimus molestiae facere, vel saepe repudiandae asperiores omnis quod tenetur doloremque mollitia aut itaque?
-        </div>
-      </div>
-      
-      <div id="messagBoxUser" class="flex flex-col w-full items-end">
-        <div id="botInfo" class="flex items-center">
-          <p class="mr-2 text-gray-200">Testington namus</p>
-          <img src="./profilePic.jpg" class="w-10 h-10 rounded-full bg-cover" alt="">
-        </div>
-        <div id="messageUser" class="bg-[#2F3335] mt-1 mr-8 rounded-xl  max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4 text-end">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis culpa magnam sapiente aperiam alias soluta a ducimus molestiae facere, vel saepe repudiandae asperiores omnis quod tenetur doloremque mollitia aut itaque?
-        </div>
-      </div>  
+  <div class="specialArea"></div>
+  <div id="chatbox" class="w-3/5 h-4/5 overflow-auto min-h-20 flex flex-col-reverse ">
 
 
-    </div>
+
+
+
   </div>
-  
+</div>
 
-  <!-- bottom -->
-  <div class="fixed w-full  bottom-8 flex justify-center">
-    <div class=" bg-[#2F3335] border-[#454545] flex border rounded-3xl w-1/2 justify-between " style="height: 56px;"
-      id="textAreaWrapper">
-      <textarea id="query" class="p-4 pl-6  rounded-l-3xl w-full   border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
-      <div id="sendButtonWrapper" class=" flex items-end">
-        <button id="sendQuery" class="material-symbols-outlined flex justify-center items-center border p-4 text-gray-200 border-[#181a1b] bg-[#1E2022] rounded-full box-border h-12 hover:bg-[#26282a] hover:border-[#26282a] transition m-1">
-          send
-        </button>
-      </div>
 
+<!-- bottom -->
+<div class="fixed w-full  bottom-8 flex justify-center">
+  <div class=" bg-[#2F3335] border-[#454545] flex border rounded-3xl w-1/2 justify-between " style="height: 56px;"
+       id="textAreaWrapper">
+    <textarea id="query" class="p-4 pl-6  rounded-l-3xl w-full   border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
+    <div id="sendButtonWrapper" class=" flex items-end">
+      <button id="sendQuery" class="material-symbols-outlined flex justify-center items-center border p-4 text-gray-200 border-[#181a1b] bg-[#1E2022] rounded-full box-border h-12 hover:bg-[#26282a] hover:border-[#26282a] transition m-1">
+        send
+      </button>
     </div>
-
-      <div class="ml-4 flex justify-evenly w-56">
-        <select name="model" id="model" class="flex items-center justify-center bg-[#2F3335] rounded-full h-14 w-36 px-6" >
-          <option value="llama2-uncensored">Llama-2</option>
-          <option value="llama3.1">Llama-3.1</option>
-        </select>
-        <button id="clearChat" class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  "><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c0c2c4"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
-
-      </div>
 
   </div>
 
+  <div class="ml-4 flex justify-evenly w-56">
+    <select name="model" id="model" class="flex items-center justify-center bg-[#2F3335] rounded-full h-14 w-36 px-6" >
+      <option value="llama3.1">Llama-3.1</option>
+      <option value="llama2-uncensored">Llama-2</option>
+      <option value="qwen:0.5b ">qwen:0.5b </option>
+    </select>
+    <button id="clearChat" class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  "><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c0c2c4"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
 
-  <!-- snackbar area -->
-    
+  </div>
 
-  <!-- Message box -->
-  <main class="flex flex-col items-center">
+</div>
 
-    <div class="w-full flex items-center flex-col h-[]" id="messageBox">
 
-    </div>
-  </main>
-  <script>
-    const textarea = document.getElementById('query');
-    const textAreaWrapper = document.getElementById('textAreaWrapper');
-    textarea.addEventListener('input', function () {
-      this.style.height = 'fit'
-      console.log(textarea.offsetHeight);
-      textAreaWrapper.style.height = this.scrollHeight + 'px'; 
-      if(textarea.value.length ==  0){
-        textAreaWrapper.style.height = "56px";
-      }
-    });
-  </script>
+<!-- snackbar area -->
 
-  <script>
 
-    async function send() {
-      let query = document.getElementById('query').value;
-      let model = document.getElementById('model').value;
+<!-- Message box -->
+<main class="flex flex-col items-center">
 
-      // Show message in front ed 
-      addMessageUser(query);
+  <div class="w-full flex items-center flex-col h-[]" id="messageBox">
 
-      // Call api to retrieve return message
-      try {
-        const response = await fetch(`http://192.168.2.17:3000/post?model=${model}&query=${query}`, {
-        });
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
+  </div>
+</main>
 
-        const json = await response.json();
 
-        let responsecontent = json.message.content;
-        let message = document.createElement('div');
-        message.classList.add('message');
-        message.innerHTML = responsecontent;
-        document.getElementById('messageBox').append(message);
+<script>
+</script>
+<script>
+  const textarea = document.getElementById('query');
+  const textAreaWrapper = document.getElementById('textAreaWrapper');
+  textarea.addEventListener('input', function () {
+    this.style.height = 'auto'
+    textAreaWrapper.style.height = this.scrollHeight + 'px';
+    if(textarea.value.length ==  0){
+      textAreaWrapper.style.height = "56px";
+    }
+  });
+</script>
 
-      } catch (error) {
-        console.error(error.message);
-      }
+<script>
+
+
+  async function send() {
+    let query = document.getElementById('query').value;
+    let model = document.getElementById('model').value;
+
+    // Handle empty
+    if(query.trim().length < 1){
+      return;
     }
 
 
+    // Show message in front ed
+    addMessageUser(query);
 
 
-    document.getElementById('sendQuery').addEventListener('click', () => {
-      send();
-    });
-    document.getElementById('clearChat').addEventListener('click', () => {
-      clear();
-    });
+    // Clear textarea
+    const textAreaWrapper = document.getElementById('textAreaWrapper');
+    textAreaWrapper.style.height = "56px";
+    document.getElementById('query').value = "";
 
-    async function clear() {
-      console.log("loading");
-      const response = await fetch(`http://192.168.2.17:3000/new`, {
+
+
+
+
+
+    // Call api to retrieve return message
+    try {
+      const response = await fetch(`http://192.168.2.14:3000/post?model=${model}&query=${query}`, {
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
+
+      const json = await response.json();
+
+      let responsecontent = json.message.content;
+      // add bot response
+      addMessageBot(responsecontent);
+    } catch (error) {
+      console.error(error.message);
     }
+  }
 
-    let profilePic = './profilePic.jpg'
-    function addMessageUser(text){
-      let messageWrapper = document.createElement('div');
-      messageWrapper.classList = 'flex flex-col w-full items-end';
 
-      let messageUserInfo = document.createElement('div');
-      messageUserInfo.classList = `flex items-center`;
 
-      messageUserInfo.innerHTML = `
+
+  document.getElementById('sendQuery').addEventListener('click', () => {
+    send();
+  });
+  document.getElementById('clearChat').addEventListener('click', () => {
+    clear();
+  });
+
+  document.getElementById('query').addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.key === 'Enter') {
+    } else if (event.key === 'Enter') {
+      send()
+    }
+  });
+  document.getElementById('query').addEventListener('keyup', function(event) {
+    if (event.shiftKey && event.key === 'Enter') {
+    } else if (event.key === 'Enter') {
+      const textAreaWrapper = document.getElementById('textAreaWrapper');
+      textAreaWrapper.style.height = "56px";
+      document.getElementById('query').value = "";
+    }
+  });
+
+
+  async function clear() {
+    const response = await fetch(`http://192.168.2.14:3000/new`, {
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    } else {
+      console.log("chat cleared succesfully");
+    }
+  }
+
+  let profilePic = './profilePic.jpg'
+  function addMessageUser(text){
+    let messageWrapper = document.createElement('div');
+    messageWrapper.classList = 'flex   flex-col w-full items-end';
+
+    let messageUserInfo = document.createElement('div');
+    messageUserInfo.classList = `flex items-center`;
+
+    messageUserInfo.innerHTML = `
       <p class="mr-2 text-gray-200">Testington namus</p>
       <img src="${profilePic}" class="w-10 h-10 rounded-full bg-cover" alt="">
       `
 
-      let messageDiv = document.createElement('div');
-      messageDiv.classList = 'bg-[#2F3335] mt-1 mr-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4 text-end'
-      messageDiv.innerHTML = text;
+    let messageDiv = document.createElement('div');
+    messageDiv.classList = 'bg-[#2F3335] mt-1 mr-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4 text-end'
+    messageDiv.innerHTML = text;
 
-      messageWrapper.append(messageUserInfo);
-      messageWrapper.append(messageDiv);
+    messageWrapper.append(messageUserInfo);
+    messageWrapper.append(messageDiv);
 
-      document.getElementById('chatbox').append(messageWrapper);
-    }
+    document.getElementById('chatbox').prepend(messageWrapper);
+  }
 
-    function addMessageBot(text){
-      let messageWrapper = document.createElement('div');
-      messageWrapper.classList = 'flex flex-col w-full';
+  function addMessageBot(text){
+    let messageWrapper = document.createElement('div');
+    messageWrapper.classList = 'flex flex-col w-full';
 
-      let messageBotInfo = document.createElement('div');
-      messageBotInfo.classList = `flex items-center`;
+    let messageBotInfo = document.createElement('div');
+    messageBotInfo.classList = `flex items-center`;
 
-      messageBotInfo.innerHTML = `
+    messageBotInfo.innerHTML = `
       <img src="${profilePic}" class="w-10 h-10 rounded-full bg-cover" alt="">
       <p class="ml-2 text-gray-200">Testington namus</p>
       `
 
-      let messageDiv = document.createElement('div');
-      messageDiv.classList = 'bg-[#2F3335] mt-1 ml-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4'
-      messageDiv.innerHTML = text;
+    let messageDiv = document.createElement('div');
+    messageDiv.classList = 'bg-[#2F3335] mt-1 ml-8 rounded-xl max-w-[65%] w-fit h-fit text-gray-200 p-3 py-4'
+    messageDiv.innerHTML = text;
 
-      messageWrapper.append(messageBotInfo);
-      messageWrapper.append(messageDiv);
+    messageWrapper.append(messageBotInfo);
+    messageWrapper.append(messageDiv);
 
-      document.getElementById('chatbox').append(messageWrapper);
-    }
-    addMessageBot("thas end ist near");
-  </script>
+    document.getElementById('chatbox').prepend(messageWrapper);
+  }
+</script>
 </body>
 
 </html>

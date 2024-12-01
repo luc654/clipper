@@ -29,15 +29,15 @@ app.get('/', (req, res) => {
 });
 app.get('/post', async (req, res) => {
   console.log("received");
-  logData(req);
   const { model, query } = req.query;
   if (verify(query)) {
     try {
       const response = await sendQuery(model,query);
+      logData(req, response);
       res.send( response);
-      
+
     } catch (error) {
-      
+      logData(req, response);
     }
   } else {
     console.log("error");
@@ -77,25 +77,26 @@ async function sendQuery(model,query) {
 }
 
 
-function logData(req) {
-  const requestData = {
-    query: req.query,
-    ip: req.ip,
-    url: req.originalUrl,
-    method: req.method,
-    query: req.query,
-    body: req.body,
-    headers: req.headers,
-    cookies: req.cookies,
-    protocol: req.protocol,
-    hostname: req.hostname,
-  };
+function logData(req, res) {
+  const requestData = `
+    Query: ${JSON.stringify(req.query, null, 2)}
+    IP: ${req.ip}
+    URL: ${req.originalUrl}
+    Method: ${req.method}
+    Body: ${JSON.stringify(req.body, null, 2)}
+    Headers: ${JSON.stringify(req.headers, null, 2)}
+    Cookies: ${JSON.stringify(req.cookies, null, 2)}
+    Protocol: ${req.protocol}
+    Hostname: ${req.hostname}
+    Response: ${JSON.stringify(res, null, 2)}
+  `;
 
-  var today = Date.now();
+  const today = Date.now();
 
   try {
-    fs.appendFile(`logs/${today}.txt`, JSON.stringify(requestData), function (err) {
+    fs.appendFile(`logs/${today}.txt`, requestData, function (err) {
       if (err) throw err;
+      console.log('Log saved!');
     });
   } catch (err) {
     console.error(err);
