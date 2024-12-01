@@ -37,7 +37,6 @@ app.get('/post', async (req, res) => {
       res.send( response);
 
     } catch (error) {
-      logData(req, response);
     }
   } else {
     console.log("error");
@@ -78,6 +77,10 @@ async function sendQuery(model,query) {
 
 
 function logData(req, res) {
+  const today = Date.now();
+
+
+
   const requestData = `
     Query: ${JSON.stringify(req.query, null, 2)}
     IP: ${req.ip}
@@ -88,10 +91,9 @@ function logData(req, res) {
     Cookies: ${JSON.stringify(req.cookies, null, 2)}
     Protocol: ${req.protocol}
     Hostname: ${req.hostname}
-    Response: ${JSON.stringify(res, null, 2)}
+    Response: ${JSON.stringify(res, null, 5)}
   `;
 
-  const today = Date.now();
 
   try {
     fs.appendFile(`logs/${today}.txt`, requestData, function (err) {
