@@ -67,12 +67,12 @@ background background hover
  -->
 <body class="bg-[#1E2021] w-full h-[1000px] text-gray-200 ">
 
-<header class="flex items-center justify-between p-4 text-[#1E2021] h-[1000px]">
+<header class="flex items-center justify-between p-4 text-[#1E2021] h-[100px] absolute z-50">
   <div class="min-h-screen  py-6 flex flex-col justify-center sm:py-12">
     <div class="flex items-center justify-center p-12">
       <div class=" relative inline-block text-left dropdown">
     <span class="rounded-md shadow-sm"
-    ><button class="bg-[#2F3335] inline-flex justify-center w-full mt-2 px-4 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out bg-[#2F3335] border border-[#454545] rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800"
+    ><button class="bg-[#2F3335] inline-flex justify-center w-full mt-2 px-4 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out bg-[#2F3335] border border-[#454545] rounded-md hover:text-gray-100 focus:outline-none focus:border-gray-600  "
              type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-117">
         <span>Options</span>
         <svg class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -83,20 +83,20 @@ background background hover
             <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownCheckboxButton">
               <li>
                 <div class="flex items-center">
-                  <input id="checkbox-item-1" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-[#454545] rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                  <input id="checkbox-item-1" type="checkbox" value="" class="w-4 h-4 text-gray-400  bg-gray-100 border-[#454545] rounded focus:ring-gray-600 dark:focus:ring-gray-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                   <label for="checkbox-item-1" class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Default checkbox</label>
                 </div>
               </li>
               <li>
                 <div class="flex items-center">
-                  <input checked id="checkbox-item-2" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-[#454545] rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                  <input checked id="checkbox-item-2" type="checkbox" value="" class="w-4 h-4 text-gray-400  bg-gray-100 border-[#454545] rounded focus:ring-gray-600 dark:focus:ring-gray-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                   <label for="checkbox-item-2" class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Checked state</label>
                 </div>
               </li>
               <li>
-                <div class="flex items-center">
-                  <input id="checkbox-item-3" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-[#454545] rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                  <label for="checkbox-item-3" class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Default checkbox</label>
+                <div class="flex items-center flex-col">
+                  <label for="checkbox-item-3" class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Base 64 Icon</label>
+                  <input id="checkbox-item-3" type="text" value="" class=" h-4 text-gray-400  bg-gray-100 border-[#454545] rounded focus:ring-blue-600 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                 </div>
               </li>
             </ul>
@@ -143,13 +143,15 @@ background background hover
     <select name="model" id="model" class="flex items-center justify-center bg-[#2F3335] rounded-full h-14 w-36 px-6" >
       <option value="llama3.1">Llama-3.1</option>
       <option value="llama2-uncensored">Llama-2</option>
-      <option value="qwen:0.5b ">qwen:0.5b </option>
+      <option value="qwen:0.5b">qwen:0.5b </option>
+      <option value="llama3.2:3b">llama3.2:3b </option>
     </select>
     <button id="clearChat" class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  "><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c0c2c4"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
 
   </div>
 
 </div>
+
 
 
 <!-- snackbar area -->
@@ -207,7 +209,7 @@ background background hover
 
     // Call api to retrieve return message
     try {
-      const response = await fetch(`http://192.168.2.14:3000/post?model=${model}&query=${query}`, {
+      const response = await fetch(`http://192.168.0.126:3000/post?model=${model}&query=${query}`, {
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
@@ -250,7 +252,7 @@ background background hover
 
 
   async function clear() {
-    const response = await fetch(`http://192.168.2.14:3000/new`, {
+    const response = await fetch(`http://192.168.0.126:3000/new`, {
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
