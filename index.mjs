@@ -94,9 +94,13 @@ function logData(req, res) {
     Response: ${JSON.stringify(res, null, 5)}
   `;
 
+  let externalCall = "Ext";
+  if(req.ip.includes(ip.address())){
+    externalCall = "";
+  }
 
   try {
-    fs.appendFile(`logs/${today}.txt`, requestData, function (err) {
+    fs.appendFile(`logs/${today}${externalCall}.txt`, requestData, function (err) {
       if (err) throw err;
       console.log('Log saved!');
     });
