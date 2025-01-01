@@ -7,6 +7,12 @@ import multer from "multer";
 
 
 let conversation = [];
+let prevQuery = "";
+let prevModel = "";
+
+let selectedEditIndex = 0;
+let currLevelEdits = [];
+
 console.dir(ip.address());
 const app = express();
 app.use(express.json());
@@ -30,6 +36,8 @@ app.get('/', (req, res) => {
 app.get('/post', async (req, res) => {
   console.log("received");
   const { model, query } = req.query;
+ prevModel = model;
+ prevQuery = query;
   if (verify(query)) {
     try {
       const response = await sendQuery(model, query);
@@ -50,6 +58,25 @@ app.get('/new', (req, res) => {
   res.send("Chat cleared");
 });
 
+app.get('/refresh', async (req, res) => {
+  console.log("Refresh message received");
+  const response = await refreshMessage();
+  res.send(response);
+});
+
+app.get('/prev', (req, res) => {
+  console.log("prev received");
+  const newText = prevResponse();
+  console.log(newText);
+  res.send(newText);
+})
+
+app.get('/forward', (req, res) => {
+  console.log("forwarding received");
+  const newText = forwardResponse();
+  console.log(newText);
+  res.send(newText);
+})
 
 function verify(query) {
   if (query.length < 1) {
@@ -146,25 +173,67 @@ function importConversation(data) {
 
     messages.forEach(chunk => {
       if (chunk.includes('{{user')) {
-
+        
         const message = simulateMessage("assistant", chunk, "{{user");
         newConv.push(message);
-      } else if (chunk.includes('{{char')) {
+      } else {
         const message = simulateMessage("user", chunk, "{{char");
         newConv.push(message);
-
       }
     });
     conversation = newConv;
-
   } else {
 
   }
-
 }
 
 
 
 function simulateMessage(role, text, remove) {
   return { role: role, content: text.replace(remove, "")};
+}
+
+
+
+
+async function refreshMessage(){
+
+  const prevMessage = conversation[conversation.length - 1];
+  currLevelEdits.push(prevMessage);
+  
+  const newConv = conversation.slice(0, -2);
+  conversation = newConv;
+  const response = await sendQuery(prevModel, prevQuery);
+
+  selectedEditIndex++;
+  return response;
+
+}
+
+function prevResponse(){
+  selectedEditIndex--;
+  const newText = currLevelEdits[selectedEditIndex];
+  if (validateResponse(newText)) setMessage(newText);
+  setMessage(newText);
+  return newText;
+}
+function forwardResponse(){
+  const newText = currLevelEdits[selectedEditIndex];
+  if (validateResponse(newText)) setMessage(newText);
+  return newText;
+}
+function validateResponse(response){
+  if(response !== undefined){
+    return true
+  }
+  return false;
+}
+
+
+// Only use to edit bot messages
+function setMessage(text){
+
+  const newConv = conversation.slice(0, -1);
+  newConv.push(text);
+  
 }
