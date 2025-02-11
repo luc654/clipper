@@ -10,6 +10,8 @@ let conversation = [];
 let prevQuery = "";
 let prevModel = "";
 
+const enableLogging = false
+
 let selectedEditIndex = 0;
 let currLevelEdits = [];
 
@@ -41,7 +43,9 @@ app.get('/post', async (req, res) => {
   if (verify(query)) {
     try {
       const response = await sendQuery(model, query);
-      logData(req, response);
+      if(enableLogging){
+        logData(req, response);
+      }
       res.send(response);
 
     } catch (error) {
