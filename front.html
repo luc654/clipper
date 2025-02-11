@@ -73,7 +73,7 @@ background background hover
         <div class="flex items-center justify-center p-12">
             <div class=" relative inline-block text-left dropdown">
     <span class="rounded-md shadow-sm"
-    ><button
+    ><button id="toggle_settings"
             class="inline-flex justify-center w-full mt-2 px-4 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out bg-[#2F3335] border border-[#454545] rounded-md hover:text-gray-100 focus:outline-none focus:border-gray-600  "
             type="button" aria-haspopup="true" aria-expanded="true" aria-controls="headlessui-menu-items-117">
         <span>Options</span>
@@ -83,7 +83,7 @@ background background hover
         </button
         ></span>
                 <div class="dropdown-menu">
-                    <form id="dropdown-form">
+                    <form id="dropdown-form" class="block">
                         <div class="absolute flex flex-col  w-56 mt-2 origin-top-right bg-[#2F3335] border border-[#454545] divide-y divide-gray-100 rounded-md shadow-lg outline-none"
                              aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
                             <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200"
@@ -405,10 +405,8 @@ background background hover
 
         }
     }
-</script>
 
-<!--File reading / uploading process-->
-<script>
+// <!--File reading / uploading process-->
   document.getElementById('uploadButton').addEventListener('click', async () => {
     const fileInput = document.getElementById('import-chat');
     const file = fileInput.files[0];
@@ -433,6 +431,20 @@ background background hover
       console.error('Error uploading file:', error);
     }
   });
+
+
+//   Toggle settings bar
+document.getElementById('toggle_settings').addEventListener('click',() => {
+    form = document.getElementById('dropdown-form');
+    classList = JSON.stringify(form.classList)
+    hidden = classList.includes("hidden");
+    if(hidden){
+        form.classList.remove('hidden');
+    } else {
+        form.classList.add('hidden');
+    }
+
+});
 </script>
 </body>
 
