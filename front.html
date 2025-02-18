@@ -449,10 +449,12 @@ background background hover
             document.getElementById('topLeftMenu').style.marginLeft = document.getElementById("textAreaWrapper").getBoundingClientRect().left + "px";
         });
 
-        const fr
+        const fr = document.getElementById('dropdown-form');
         document.getElementById('optionsBtn').addEventListener('click', () => { 
-            if .classList.contains("hidden"){
-
+            if (fr.classList.contains("hidden")){
+                fr.classList.remove("hidden")
+            } else {
+                fr.classList.add("hidden")
             }
         });
 
