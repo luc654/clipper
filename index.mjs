@@ -59,6 +59,7 @@ app.get('/post', async (req, res) => {
 app.get('/new', (req, res) => {
   console.log("received clear conversation");
   conversation = [];
+  currLevelEdits = [];
   res.send("Chat cleared");
 });
 
@@ -82,6 +83,14 @@ app.get('/forward', (req, res) => {
   res.send(newText);
 })
 
+app.get('/debug', (req, res) => {
+  console.log()
+  console.log()
+  console.log()
+  console.log(currLevelEdits);
+  console.log(selectedEditIndex);
+});
+
 function verify(query) {
   if (query.length < 1) {
     return false;
@@ -101,6 +110,7 @@ async function sendQuery(model, query) {
   })
   conversation.push({ role: 'user', content: query });
   conversation.push(response.message);
+  currLevelEdits.push(response.message.content)
   console.log(conversation);
   return response;
 }
@@ -202,8 +212,6 @@ function simulateMessage(role, text, remove) {
 
 async function refreshMessage(){
 
-  const prevMessage = conversation[conversation.length - 1];
-  currLevelEdits.push(prevMessage);
   
   const newConv = conversation.slice(0, -2);
   conversation = newConv;
@@ -217,11 +225,13 @@ async function refreshMessage(){
 function prevResponse(){
   selectedEditIndex--;
   const newText = currLevelEdits[selectedEditIndex];
+  console.log(newText);
   if (validateResponse(newText)) setMessage(newText);
   setMessage(newText);
   return newText;
 }
 function forwardResponse(){
+  selectedEditIndex++;
   const newText = currLevelEdits[selectedEditIndex];
   if (validateResponse(newText)) setMessage(newText);
   return newText;
@@ -236,8 +246,8 @@ function validateResponse(response){
 
 // Only use to edit bot messages
 function setMessage(text){
-
+  const message = simulateMessage("assistant", text);
   const newConv = conversation.slice(0, -1);
-  newConv.push(text);
+  newConv.push(message);
   
 }

@@ -135,6 +135,7 @@ background background hover
     </header>
     <div class="absolute right-0 z-50">
 
+        <button class="border px-2 opacity-25" id="debug">debug</button>
         <button class="border px-2" id="prevMessage"><--</button>
                 <button class="border px-2" id="forwardMessage">--></button>
     </div>
@@ -230,7 +231,7 @@ background background hover
     </script>
 
     <script>
-        const ip = `192.168.1.20:3000`;
+        const ip = `10.203.85.13:3000`;
 
         async function send() {
             let query = document.getElementById('query').value;
@@ -283,6 +284,9 @@ background background hover
         document.getElementById('prevMessage').addEventListener('click', () => {
             prevMessage();
         })
+        document.getElementById("debug").addEventListener('click', () => {
+            debugProcess();
+        });
         document.getElementById('forwardMessage').addEventListener('click', () => {
             forwardMessage();
         })
@@ -322,7 +326,7 @@ background background hover
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             } else {
-                console.log("Message reset!");
+                console.log("Message reset!!");
                 const json = await response.json();
                 const message = json.message.content;
                 console.log(message);
@@ -390,9 +394,8 @@ background background hover
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             } else {
-                console.log("Message reset!");
-                const json = await response.json();
-                const message = json.content;
+                console.log("Message reset!.");
+                const message = await response.text();
                 console.log(message);
                 removeLastMessage();
                 addMessageBot(message);
@@ -404,11 +407,8 @@ background background hover
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             } else {
-                console.log("Message reset!");
-                console.log(JSON.stringify(response));
-                const json = await response.json();
-                console.log(json);
-                const message = json.content;
+                console.log("Message reset!.");
+                const message = await response.text();
                 console.log(message);
                 removeLastMessage();
                 addMessageBot(message);
@@ -457,6 +457,10 @@ background background hover
                 fr.classList.add("hidden")
             }
         });
+
+        function debugProcess(){
+            const response =  fetch(`http://${ip}/debug`, {});
+        }
 
 
     </script>
