@@ -85,10 +85,18 @@ app.get('/forward', (req, res) => {
 
 app.get('/debug', (req, res) => {
   console.log()
+  console.log("Debug:")
   console.log()
+  console.log(conversation);
+  console.log("______")
   console.log()
   console.log(currLevelEdits);
   console.log(selectedEditIndex);
+});
+
+app.get('/api/models', async (req, res) =>  {
+  const models = await getLocal()
+ res.send(models)
 });
 
 function verify(query) {
@@ -115,6 +123,11 @@ async function sendQuery(model, query) {
   return response;
 }
 
+
+async function getLocal(){
+  const response = await ollama.list();
+  return response;
+}
 
 function logData(req, res) {
   const today = Date.now();
