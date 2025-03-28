@@ -1,5 +1,4 @@
 .env
 logs/
-raspberryPi/
 node_modules/
-example.py
+secret.js
