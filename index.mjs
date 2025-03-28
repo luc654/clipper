@@ -64,7 +64,7 @@ app.get('/new', (req, res) => {
 });
 
 app.get('/refresh', async (req, res) => {
-  const model = req.model;
+  const model = req.query.model;
   console.log("Refresh message received with " + model);
   const response = await refreshMessage(model);
   res.send(response);
