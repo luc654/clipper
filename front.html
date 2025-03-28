@@ -224,8 +224,11 @@ background background hover
         });
     </script>
 
+    <!-- Handle externally loaded IP -->
+    <script src="secret.js"></script>
+
     <script>
-        const ip = `192.168.2.18:3000`;
+        const ip = IPADDRESS;
 
         async function send() {
             let query = document.getElementById('query').value;
@@ -319,7 +322,8 @@ background background hover
         }
 
         async function refreshMessage() {
-            const response = await fetch(`http://${ip}/refresh`, {});
+            let model = document.getElementById('model').value;
+            const response = await fetch(`http://${ip}/refresh?model=${model}`, {});
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             } else {

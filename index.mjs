@@ -36,8 +36,8 @@ app.get('/', (req, res) => {
   res.send('Clipper: Online and listening.');
 });
 app.get('/post', async (req, res) => {
-  console.log("received");
   const { model, query } = req.query;
+  console.log("received " + model);
  prevModel = model;
  prevQuery = query;
   if (verify(query)) {
@@ -64,8 +64,9 @@ app.get('/new', (req, res) => {
 });
 
 app.get('/refresh', async (req, res) => {
-  console.log("Refresh message received");
-  const response = await refreshMessage();
+  const model = req.model;
+  console.log("Refresh message received with " + model);
+  const response = await refreshMessage(model);
   res.send(response);
 });
 
@@ -87,11 +88,10 @@ app.get('/debug', (req, res) => {
   console.log()
   console.log("Debug:")
   console.log()
-  console.log(conversation);
+  console.log(prevModel);
   console.log("______")
   console.log()
-  console.log(currLevelEdits);
-  console.log(selectedEditIndex);
+  
 });
 
 app.get('/api/models', async (req, res) =>  {
@@ -223,12 +223,13 @@ function simulateMessage(role, text, remove) {
 
 
 
-async function refreshMessage(){
+async function refreshMessage(model){
 
   
   const newConv = conversation.slice(0, -2);
   conversation = newConv;
-  const response = await sendQuery(prevModel, prevQuery);
+  console.log("Resseting with " + model + " And " + prevQuery)
+  const response = await sendQuery(model, prevQuery);
 
   selectedEditIndex++;
   return response;
