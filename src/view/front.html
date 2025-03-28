@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=send" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .specialArea {
+            width: 100%;
+            background: linear-gradient(#1E2021, #1e202100);
+            height: 70px;
+            margin-bottom: -70px;
+            z-index: 1;
+        }
+
+        .specialAreaBottom {
+            width: 100%;
+            background: linear-gradient(#1e202100, #1E2021);
+            height: 70px;
+            margin-top: -70px;
+            z-index: 1;
+        }
+
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #1E2021;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #26282a;
+            border-radius: 10px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #292a2c;
+        }
+    </style>
+</head>
+
+
+<!--
+background
+#2F3335
+
+border
+#454545
+
+background background
+#1E2022
+
+background border
+#181a1b
+
+background background hover
+#26282a
+ -->
+
+<body class="bg-[#1E2021] w-full h-[1000px] text-gray-200 ">
+
+    <header class="flex items-center justify-between text-[#1E2021] h-[100px] absolute z-50" id="topLeftMenu">
+        <div class="flex items-center justify-center">
+            <div class=" relative inline-block text-left dropdown">
+                <span class="rounded-md shadow-sm"><button
+                        class="inline-flex justify-center w-full mt-2 px-4 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out bg-[#2F3335] border border-[#454545] rounded-md hover:text-gray-100 focus:outline-none focus:border-gray-600  "
+                        type="button" id="optionsBtn" aria-controls="headlessui-menu-items-117">
+                        <span>Options</span>
+                        <svg class="w-5 h-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button></span>
+                <div class="dropdown-menu">
+                    <form id="dropdown-form" class="hidden">
+                        <div class="absolute flex flex-col  w-56 mt-2 origin-top-right bg-[#2F3335] border border-[#454545] divide-y divide-gray-100 rounded-md shadow-lg outline-none"
+                            aria-labelledby="headlessui-menu-button-1" id="headlessui-menu-items-117" role="menu">
+                            <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownCheckboxButton">
+                                <li>
+                                    <div class="flex items-center">
+                                        <input id="checkbox-item-1" type="checkbox" value=""
+                                            class="w-4 h-4 text-gray-400  bg-gray-100 border-[#454545] rounded focus:ring-gray-600 dark:focus:ring-gray-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                        <label for="checkbox-item-1"
+                                            class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Default
+                                            checkbox</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="flex items-center">
+                                        <input checked id="checkbox-item-2" type="checkbox" value=""
+                                            class="w-4 h-4 text-gray-400  bg-gray-100 border-[#454545] rounded focus:ring-gray-600 dark:focus:ring-gray-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                        <label for="checkbox-item-2"
+                                            class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Checked
+                                            state</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="flex items-center flex-col">
+                                        <label for="checkbox-item-3"
+                                            class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">Image</label>
+                                        <input id="checkbox-item-3" type="file" value="" class="hidden">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="flex items-center flex-col">
+                                        <label for="import-chat"
+                                            class="ms-2 text-sm font-medium text-gray-400 dark:text-gray-300">import
+                                            chat</label>
+                                        <input id="import-chat" type="file" value="" class="hidden">
+                                    </div>
+                                </li>
+                            </ul>
+                            <button id="uploadButton"
+                                class="border-none p-2 rounded-md text-sm font-medium text-gray-400 ">
+                                Upload
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="absolute right-0 z-50">
+
+        <button class="border px-2 opacity-25" id="debug">debug</button>
+        <button class="border px-2" id="prevMessage"><--< /button>
+                <button class="border px-2" id="forwardMessage">--></button>
+    </div>
+
+    <style>
+        .dropdown:focus-within .dropdown-menu {
+            /* @apply block; */
+            display: block;
+        }
+    </style>
+
+    <div id="main" class="w-full h-full flex justify-start flex-col items-center">
+
+        <div class="specialArea"></div>
+        <div id="chatbox" class="w-4/5 xl:w-3/5 h-4/5 overflow-auto min-h-20 flex flex-col-reverse ">
+
+
+        </div>
+    </div>
+
+
+    <!-- bottom -->
+    <div class="fixed w-full  bottom-8 flex justify-center">
+        <div class="bg-[#2F3335] border-[#454545] flex border rounded-3xl w-1/2 justify-between " style="height: 56px;"
+            id="textAreaWrapper">
+            <textarea id="query"
+                class="p-4 pl-6  rounded-l-3xl w-full   border-[#242728] bg-inherit resize-none overflow-hidden outline-none"></textarea>
+            <div id="sendButtonWrapper" class=" flex items-end">
+                <button id="sendQuery"
+                    class="material-symbols-outlined flex justify-center items-center border p-4 text-gray-200 border-[#181a1b] bg-[#1E2022] rounded-full box-border h-12 hover:bg-[#26282a] hover:border-[#26282a] transition m-1">
+                    send
+                </button>
+            </div>
+
+        </div>
+
+        <div class="ml-4 flex justify-evenly w-72">
+            <select name="model" id="model"
+                class="flex items-center justify-center bg-[#2F3335] rounded-full h-14 w-36 px-6">
+            </select>
+            <button id="clearChat"
+                class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  ">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#c0c2c4">
+                    <path
+                        d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                </svg>
+            </button>
+            <button id="refreshMessage"
+                class="h-14 w-14 flex items-center justify-center bg-[#2F3335] rounded-full text-gray-200  ">
+                <svg width="50px" height="50px" fill="#c0c2c4" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M25 38c-7.2 0-13-5.8-13-13 0-3.2 1.2-6.2 3.3-8.6l1.5 1.3C15 19.7 14 22.3 14 25c0 6.1 4.9 11 11 11 1.6 0 3.1-.3 4.6-1l.8 1.8c-1.7.8-3.5 1.2-5.4 1.2z" />
+                    <path
+                        d="M34.7 33.7l-1.5-1.3c1.8-2 2.8-4.6 2.8-7.3 0-6.1-4.9-11-11-11-1.6 0-3.1.3-4.6 1l-.8-1.8c1.7-.8 3.5-1.2 5.4-1.2 7.2 0 13 5.8 13 13 0 3.1-1.2 6.2-3.3 8.6z" />
+                    <path d="M18 24h-2v-6h-6v-2h8z" />
+                    <path d="M40 34h-8v-8h2v6h6z" />
+                </svg>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- snackbar area -->
+
+
+    <!-- Message box -->
+    <main class="flex flex-col items-center">
+
+        <div class="w-full flex items-center flex-col h-[]" id="messageBox">
+
+        </div>
+    </main>
+
+
+
+    <!-- Handle externally loaded IP -->
+    <script src="../../secret.js"></script>
+
+    <script src="js/api.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/fileAPI.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/eventHandlers.js"></script>
+
+</body>
+
+</html>
