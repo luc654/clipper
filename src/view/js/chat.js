@@ -28,3 +28,11 @@ function prependMessage(text, user, pic, alignment) {
     wrapper.append(userInfo, messageDiv);
     document.getElementById('chatbox').prepend(wrapper);
 }
+
+
+function prependChatDivider(){
+    const linebreak = document.createElement('div');
+            linebreak.classList = 'w-full rounded-full  bg-[#2F3335] px-4 py-2 mt-12 mb-4';
+
+            document.getElementById('chatbox').prepend(linebreak);
+};

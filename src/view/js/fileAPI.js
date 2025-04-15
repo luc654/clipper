@@ -10,6 +10,7 @@ async function uploadFile() {
         const result = await response.json();
         console.log('File content:', result.content);
         alert('File uploaded successfully!');
+        e.preventDefault();
     } catch (error) {
         console.error('Error uploading file:', error);
     }
