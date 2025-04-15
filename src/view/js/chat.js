@@ -36,3 +36,14 @@ function prependChatDivider(){
 
             document.getElementById('chatbox').prepend(linebreak);
 };
+
+function styleInp(e){
+    const textarea = document.getElementById('query');
+    const textAreaWrapper = document.getElementById('textAreaWrapper');
+   
+    textarea.style.height = 'auto';
+    textAreaWrapper.style.height = this.scrollHeight + 'px';
+    if (textarea.value.length == 0) {
+        textAreaWrapper.style.height = "56px";
+    }
+}

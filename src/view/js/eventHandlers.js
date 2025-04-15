@@ -17,3 +17,16 @@ document.getElementById('query').addEventListener('keydown', function (event) {
 
 document.getElementById('uploadButton').addEventListener('click', uploadFile);
 document.getElementById('optionsBtn').addEventListener('click', toggleDropdown);
+
+document.getElementById("query").addEventListener('input', adjustHeight);
+function adjustHeight() {
+    const textarea = document.getElementById('query');
+    const textAreaWrapper = document.getElementById('textAreaWrapper');
+
+    if (textarea.value.length === 0) {
+        textAreaWrapper.style.height = "56px";
+    } else {
+    this.style.height = 'auto';
+    textAreaWrapper.style.height = textarea.scrollHeight + 'px';
+    }
+    }
