@@ -4,9 +4,12 @@ async function send() {
     let query = document.getElementById('query').value;
     let model = document.getElementById('model').value;
     if (query.trim().length < 1) return;
+    document.getElementById('query').value = "";
     addMessageUser(query);
     resetTextArea();
+    spamResetTextArea();
     try {
+        resetTextArea();
         const response = await fetch(`http://${ip}/post?model=${model}&query=${query}`);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const json = await response.json();
