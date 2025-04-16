@@ -95,8 +95,13 @@ app.get('/debug', (req, res) => {
 });
 
 app.get('/api/models', async (req, res) =>  {
-  const models = await getLocal()
- res.send(models)
+  try {
+    const models = await getLocal()
+   res.send(models)
+    
+  } catch (error) {
+    warn("Serve Ollama. Unable to run ollama accounts");
+  }
 });
 
 function verify(query) {
@@ -109,6 +114,7 @@ function verify(query) {
 
 
 async function sendQuery(model, query) {
+  adjustHeight();
   const response = await ollama.chat({
     model: model,
     messages: [
@@ -264,4 +270,11 @@ function setMessage(text){
   const newConv = conversation.slice(0, -1);
   newConv.push(message);
   
+}
+function warn(text){
+  console.log("");
+  console.log("===========");
+  console.log(text);
+  console.log("===========");
+  console.log("");
 }
