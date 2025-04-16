@@ -113,8 +113,7 @@ function verify(query) {
 }
 
 
-async function sendQuery(model, query) {
-  adjustHeight();
+async function sendQuery(model, query) {adjustHeight();
   const response = await ollama.chat({
     model: model,
     messages: [
