@@ -19,6 +19,9 @@ document.getElementById('uploadButton').addEventListener('click', uploadFile);
 document.getElementById('optionsBtn').addEventListener('click', toggleDropdown);
 
 document.getElementById("query").addEventListener('input', adjustHeight);
+window.onload = function() {
+    document.getElementById('query').value = "";
+};
 function adjustHeight() {
     const textarea = document.getElementById('query');
     const textAreaWrapper = document.getElementById('textAreaWrapper');

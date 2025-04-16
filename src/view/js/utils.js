@@ -1,6 +1,21 @@
 function resetTextArea() {
     document.getElementById('textAreaWrapper').style.height = "56px";
-    document.getElementById('query').value = "";
+    const textarea = document.getElementById('query');
+    textarea.value = '';                
+    textarea.textContent = '';          
+    textarea.innerText = '';            
+    textarea.innerHTML = '';            
+    textarea.setAttribute('value', ''); 
+    textAreaWrapper.style.height = "56px";
+}
+function spamResetTextArea(duration = 500, interval = 5) {
+    const start = performance.now();
+    const id = setInterval(() => {
+        resetTextArea();
+        if (performance.now() - start > duration) {
+            clearInterval(id);
+        }
+    }, interval);
 }
 
 function toggleDropdown() {
@@ -9,8 +24,12 @@ function toggleDropdown() {
 }
 
 function handleKeydown(event) {
-    if (!event.shiftKey && event.key === 'Enter') send();
+    if (!event.shiftKey && event.key === 'Enter') {
+        event.preventDefault(); // ← This is the key to kill the auto-expand
+        send();
+    }
 }
+
 
 function handleKeyup(event) {
     if (!event.shiftKey && event.key === 'Enter') resetTextArea();
