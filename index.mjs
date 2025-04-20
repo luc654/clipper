@@ -126,12 +126,13 @@ async function sendMessage(query, model){
   });
 
   sendToFront("<Start>");
+  let botMessage = "";
   for await (const part of response){
-    console.log(part.message.content);
     sendToFront(part.message.content);
+    botMessage = botMessage.concat(part.message.content);
   }
   sendToFront("<End>");
-  const botResp = response.message;
+  const botResp = {role: "assistant", content: botMessage};
   conv.push({index, userInp, botResp});
   index++
 
@@ -177,12 +178,12 @@ async function dbg(text){
 // ==============================================
 
 function formatConversation(oldConv){
-  let formatConv = [];
 
+  let formatConv = [];
   oldConv.forEach(element => {
     // Each element holds both the user and assistant message in either another nested array.
-        formatConv.push({"role": "user", "content": element[0][1]});
-        formatConv.push({"role": "assistant", "content": element[1][1]});
+        formatConv.push({"role": "user", "content": element["userInp"]["content"]});
+        formatConv.push({"role": "assistant", "content": element["botResp"]["content"]});
   });
 
   return formatConv;
