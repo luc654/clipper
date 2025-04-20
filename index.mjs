@@ -10,6 +10,9 @@ import multer from "multer";
 // ==============================================
 let debug = true;
 
+let index = 0;
+// Format {index, ["sender", text],["sender", text]}
+let conv = [];
 
 
 
@@ -59,6 +62,21 @@ async function getModals(){
 
 
 
+async function sendMessage(query, model){
+  const response = await ollama.chat({
+    model: model,
+    messages: {
+
+    }
+  });
+  
+
+
+
+}
+
+
+
 
 
 
@@ -83,4 +101,16 @@ async function dbg(text){
   if(debug){
     console.log(text);
   }
+}
+
+
+
+
+// ==============================================
+// Format functions
+// ==============================================
+
+function formatConversation(oldConv){
+
+
 }
