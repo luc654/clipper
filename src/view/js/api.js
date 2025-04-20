@@ -10,10 +10,11 @@ async function send() {
     spamResetTextArea();
     try {
         resetTextArea();
-        const response = await fetch(`http://${ip}/post?model=${model}&query=${query}`);
+        const response = await fetch(`http://${ip}/api/post?model=${model}&query=${query}`);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const json = await response.json();
-        addMessageBot(json.message.content);
+        console.log(json);
+        addMessageBot(json.content);
     } catch (error) {
         console.error(error.message);
     }

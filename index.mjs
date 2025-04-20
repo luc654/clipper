@@ -4,6 +4,8 @@ import express, { query, response } from 'express';
 import fs, { link } from 'fs';
 import ip from "ip";
 import multer from "multer";
+import cors from "cors";
+import { WebSocket } from 'ws';
 
 // ==============================================
 // Global variables
@@ -23,7 +25,7 @@ let conv = [];
 const app = express();
 const port = 3000;
 const ipAddr = ip.address();
-
+app.use(cors());
 
 
 app.listen(port, () => {
@@ -39,6 +41,19 @@ app.get('/api/modals', async (req, res) => {
   res.send(modals);
 });
 
+app.get('/api/post', async (req, res) => {
+  const  { model, query} = req.query;
+  console.log(`Received: ${model} -> ${query.substr(0, 40)}`);
+
+try {
+  const response = await (sendMessage(query, model))
+  console.log(response);
+  res.send(JSON.stringify(response));
+} catch (e) {
+  error(e);
+}
+});
+
 
 
 // ==============================================
@@ -49,7 +64,6 @@ async function getModals(){
   try {
     const modals = await ollama.list();
     if(modals){
-      dbg("Suc");
       return modals;
     } else {
       warn("Could not retrieve modals");
@@ -63,14 +77,29 @@ async function getModals(){
 
 
 async function sendMessage(query, model){
+
+  const userInp = {role: "user", content: query}
+  const history = formatConversation(conv);
   const response = await ollama.chat({
     model: model,
-    messages: {
+    messages: [
+      ...history,
+      userInp
+    ],
 
-    }
+    stream: true
+    
   });
-  
 
+  for await (const part of response){
+    console.log(part);
+  }
+  const botResp = response.message;
+  conv.push({index, userInp, botResp});
+  index++
+
+  return botResp;
+  
 
 
 }
@@ -111,6 +140,13 @@ async function dbg(text){
 // ==============================================
 
 function formatConversation(oldConv){
+  let formatConv = [];
 
+  oldConv.forEach(element => {
+    // Each element holds both the user and assistant message in either another nested array.
+        formatConv.push({"role": "user", "content": element[0][1]});
+        formatConv.push({"role": "assistant", "content": element[1][1]});
+  });
 
+  return formatConv;
 }
