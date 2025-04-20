@@ -6,6 +6,7 @@ import ip from "ip";
 import multer from "multer";
 import cors from "cors";
 import { WebSocket } from 'ws';
+import { WebSocketServer } from 'ws';
 
 // ==============================================
 // Global variables
@@ -15,6 +16,9 @@ let debug = true;
 let index = 0;
 // Format {index, ["sender", text],["sender", text]}
 let conv = [];
+
+// Shuts downn server if > maxConnect
+const maxConnect = 1;
 
 
 
@@ -55,6 +59,36 @@ try {
 });
 
 
+// ==============================================
+// WebSockets
+// ==============================================
+
+const wss = new WebSocketServer({host: ipAddr, port: 8080})
+
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+    console.log("Client connected");
+    clients.add(ws);
+
+    ws.on('close', () => {
+      console.log("Client left");
+      clients.delete(ws);
+    })
+    
+    ws.on('error', (err) => {
+      console.log("Client crashed: " , err);
+      clients.delete(ws);
+    })
+})
+
+function sendToFront(content){
+  for (const client of clients){
+    if(client.readyState === client.OPEN){
+      client.send(content);
+    }
+  }
+}
 
 // ==============================================
 // Ollama Functions
@@ -91,9 +125,12 @@ async function sendMessage(query, model){
     
   });
 
+  sendToFront("<Start>");
   for await (const part of response){
-    console.log(part);
+    console.log(part.message.content);
+    sendToFront(part.message.content);
   }
+  sendToFront("<End>");
   const botResp = response.message;
   conv.push({index, userInp, botResp});
   index++
