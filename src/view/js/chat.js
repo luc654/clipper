@@ -44,7 +44,6 @@ function prependMessage(text, user, pic, alignment) {
 
 function appendMessage(content, id){
     if(!id) {id = chatId - 1};
-    console.log(id);
     document.getElementById(id).innerHTML += content;
 }
 

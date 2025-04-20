@@ -6,7 +6,6 @@ const socket = new WebSocket(`ws://${ip.split(":")[0]}:8080`);
   };
 
   socket.onmessage = (event) => {
-    console.log('Received from server:', event.data);
     if(event.data == "<Start>"){
         addMessageBot("");
     }  else if (event.data == "<Stop>"){
