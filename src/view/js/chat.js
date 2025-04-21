@@ -12,6 +12,7 @@ function addMessageBot(text) {
 
 function removeLastMessage() {
     document.getElementById('chatbox').firstChild.remove();
+    chatId--;
 }
 
 function prependMessage(text, user, pic, alignment) {

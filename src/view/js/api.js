@@ -26,7 +26,7 @@ async function clear() {
 async function refreshMessage() {
     const model = document.getElementById('model').value;
     try {
-        const response = await fetch(`http://${ip}/refresh?model=${model}`);
+        const response = await fetch(`http://${ip}/api/refresh?model=${model}`);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const json = await response.json();
         addMessageBot(json.message.content);

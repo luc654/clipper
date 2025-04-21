@@ -11,15 +11,26 @@ import { WebSocketServer } from 'ws';
 // ==============================================
 // Global variables
 // ==============================================
+
+// Determines verbose debugging logging
 let debug = true;
 
+// Current message index
 let index = 0;
+
 // Format {index, ["sender", text],["sender", text]}
 let conv = [];
 
-// Shuts downn server if > maxConnect
+// Shuts down server if > maxConnect
 const maxConnect = 1;
 
+// Format {[Level index, ["text", "text"]]}
+let swipes = []
+// Index of current swipe in the swipe nested array.
+let swipeIndex = 0;
+
+// Previous query
+let prevQuery = "";
 
 
 // ==============================================
@@ -48,16 +59,25 @@ app.get('/api/modals', async (req, res) => {
 app.get('/api/post', async (req, res) => {
   const  { model, query} = req.query;
   console.log(`Received: ${model} -> ${query.substr(0, 40)}`);
+  addLevel();
 
 try {
-  const response = await (sendMessage(query, model))
-  console.log(response);
-  res.send(JSON.stringify(response));
+  await sendMessage(query, model);
+  prevQuery = query;
 } catch (e) {
   error(e);
 }
 });
 
+app.get('/api/refresh', async (req, res) => {
+  const {model} = req.query;
+  try {
+    refresh(model);
+  } catch (e) {
+    error(e);
+  }
+
+})
 
 // ==============================================
 // WebSockets
@@ -70,6 +90,11 @@ const clients = new Set();
 wss.on('connection', (ws) => {
     console.log("Client connected");
     clients.add(ws);
+
+    if(clients.size > maxConnect){
+      error(`More then ${maxConnect} people connnected, shutting down!`);
+      wss.close();
+    }
 
     ws.on('close', () => {
       console.log("Client left");
@@ -110,7 +135,7 @@ async function getModals(){
 
 
 
-async function sendMessage(query, model){
+async function sendMessage(query, model, miD=null){3
 
   const userInp = {role: "user", content: query}
   const history = formatConversation(conv);
@@ -125,7 +150,12 @@ async function sendMessage(query, model){
     
   });
 
-  sendToFront("<Start>");
+  if(!miD){
+
+    sendToFront("<Start>");
+  } else {
+    sendToFront(miD);
+  }
   let botMessage = "";
   for await (const part of response){
     sendToFront(part.message.content);
@@ -134,8 +164,11 @@ async function sendMessage(query, model){
   sendToFront("<End>");
   const botResp = {role: "assistant", content: botMessage};
   conv.push({index, userInp, botResp});
+  
+  addToSwipe(index, botResp);
+  // Send text to swipe array
+  
   index++
-
   return botResp;
   
 
@@ -188,3 +221,49 @@ function formatConversation(oldConv){
 
   return formatConv;
 }
+
+// 
+// Refresh functions
+// 
+
+
+async function refresh(model){
+
+  // Remove the last entry of current conversation
+  conv.pop();
+
+  // generate new response
+  const botResp = await sendMessage(prevQuery, model, "<Refresh>");
+
+  // console.log("Retrieved: " + JSON.stringify(botResp));
+  // increase swipe index
+
+  // store new response
+
+  console.log(JSON.stringify(conv));
+}
+
+// 
+// Swipe functions
+// 
+function addLevel(){
+  swipes.push([index, []]);
+}
+function addToSwipe(index, text){
+
+  swipes.forEach(element => {
+
+    if(element[0] == index){
+      element[1].push(text);
+    }
+  });
+
+  console.log(JSON.stringify(swipes));
+}
+
+function swipeForward(){
+
+
+
+}
+
