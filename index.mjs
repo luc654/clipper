@@ -7,6 +7,8 @@ import multer from "multer";
 import cors from "cors";
 import { WebSocket } from 'ws';
 import { WebSocketServer } from 'ws';
+import { text } from 'stream/consumers';
+import { normalize } from 'path';
 
 // ==============================================
 // Global variables
@@ -59,10 +61,10 @@ app.get('/api/modals', async (req, res) => {
 app.get('/api/post', async (req, res) => {
   const  { model, query} = req.query;
   console.log(`Received: ${model} -> ${query.substr(0, 40)}`);
-  addLevel();
-
-try {
-  await sendMessage(query, model);
+  
+  try {
+    await sendMessage(query, model);
+    addLevel();
   prevQuery = query;
 } catch (e) {
   error(e);
@@ -76,8 +78,17 @@ app.get('/api/refresh', async (req, res) => {
   } catch (e) {
     error(e);
   }
-
 })
+
+app.get('/api/backwards', async (req, res) => {
+  const newMessage = swipeBackwards();
+
+  if (newMessage == "<ERR>"){
+    res.sendStatus('500');
+  } else {
+    res.send(newMessage);
+  }
+});
 
 // ==============================================
 // WebSockets
@@ -135,7 +146,7 @@ async function getModals(){
 
 
 
-async function sendMessage(query, model, miD=null){3
+async function sendMessage(query, model, miD=null, incrementIndex=true){
 
   const userInp = {role: "user", content: query}
   const history = formatConversation(conv);
@@ -165,10 +176,12 @@ async function sendMessage(query, model, miD=null){3
   const botResp = {role: "assistant", content: botMessage};
   conv.push({index, userInp, botResp});
   
-  addToSwipe(index, botResp);
   // Send text to swipe array
   
-  index++
+  if(incrementIndex){
+    index++
+    addToSwipe(index, botResp.content);
+  }
   return botResp;
   
 
@@ -233,14 +246,14 @@ async function refresh(model){
   conv.pop();
 
   // generate new response
-  const botResp = await sendMessage(prevQuery, model, "<Refresh>");
+  const botResp = await sendMessage(prevQuery, model, "<Refresh>", false);
 
-  // console.log("Retrieved: " + JSON.stringify(botResp));
   // increase swipe index
+  swipeIndex++;
 
   // store new response
+  addToSwipe(index, botResp.content);
 
-  console.log(JSON.stringify(conv));
 }
 
 // 
@@ -253,12 +266,14 @@ function addToSwipe(index, text){
 
   swipes.forEach(element => {
 
+    console.log(element[0] + " / " + index);
+    console.log(typeof element[0], typeof index); // helpful debug
     if(element[0] == index){
+      console.log("Swipe added succesfully " + text);
       element[1].push(text);
     }
   });
 
-  console.log(JSON.stringify(swipes));
 }
 
 function swipeForward(){
@@ -266,4 +281,25 @@ function swipeForward(){
 
 
 }
+function swipeBackwards(){
+  
+  let prevBotResp;
 
+  swipeIndex--;
+
+  swipes.forEach(element => {
+    
+    if(element[0] == index){
+      prevBotResp = element[1][swipeIndex];
+    }
+  });
+  if (prevBotResp == undefined || prevBotResp.length < 1){
+    warn("Unable to swipe backwards | prevBotResp is empty: " + prevBotResp);
+    return "<ERR>";
+  }
+
+
+  // console.log("A: " + prevBotResp);
+  conv[conv.length-1]["botResp"] = prevBotResp;
+  return prevBotResp;
+}

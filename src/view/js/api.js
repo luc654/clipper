@@ -36,7 +36,7 @@ async function refreshMessage() {
 }
 
 async function prevMessage() {
-    const response = await fetch(`http://${ip}/prev`);
+    const response = await fetch(`http://${ip}/api/backwards`);
     if (!response.ok) throw new Error(`Response status: ${response.status}`);
     const message = await response.text();
     removeLastMessage();
