@@ -25,7 +25,7 @@ function toggleDropdown() {
 
 function handleKeydown(event) {
     if (!event.shiftKey && event.key === 'Enter') {
-        event.preventDefault(); // ← This is the key to kill the auto-expand
+        event.preventDefault(); 
         send();
     }
 }
@@ -38,7 +38,8 @@ function handleKeyup(event) {
 document.addEventListener("DOMContentLoaded", showModels);
 async function showModels() {
     try {
-        const response = await fetch(`http://${ip}/api/models`);
+        console.log(ip);
+        const response = await fetch(`http://${ip}/api/modals`);
         const models = await response.json();
         document.getElementById('model').innerHTML = models.models.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
     } catch (error) {

@@ -10,10 +10,7 @@ async function send() {
     spamResetTextArea();
     try {
         resetTextArea();
-        const response = await fetch(`http://${ip}/post?model=${model}&query=${query}`);
-        if (!response.ok) throw new Error(`Response status: ${response.status}`);
-        const json = await response.json();
-        addMessageBot(json.message.content);
+        await fetch(`http://${ip}/api/post?model=${model}&query=${query}`);
     } catch (error) {
         console.error(error.message);
     }
@@ -29,7 +26,7 @@ async function clear() {
 async function refreshMessage() {
     const model = document.getElementById('model').value;
     try {
-        const response = await fetch(`http://${ip}/refresh?model=${model}`);
+        const response = await fetch(`http://${ip}/api/refresh?model=${model}`);
         if (!response.ok) throw new Error(`Response status: ${response.status}`);
         const json = await response.json();
         addMessageBot(json.message.content);
@@ -39,7 +36,7 @@ async function refreshMessage() {
 }
 
 async function prevMessage() {
-    const response = await fetch(`http://${ip}/prev`);
+    const response = await fetch(`http://${ip}/api/backwards`);
     if (!response.ok) throw new Error(`Response status: ${response.status}`);
     const message = await response.text();
     removeLastMessage();

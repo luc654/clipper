@@ -4,276 +4,302 @@ import express, { query, response } from 'express';
 import fs, { link } from 'fs';
 import ip from "ip";
 import multer from "multer";
+import cors from "cors";
+import { WebSocket } from 'ws';
+import { WebSocketServer } from 'ws';
+import { text } from 'stream/consumers';
+import { normalize } from 'path';
 
+// ==============================================
+// Global variables
+// ==============================================
 
-let conversation = [];
+// Determines verbose debugging logging
+let debug = true;
+
+// Current message index
+let index = 0;
+
+// Format {index, ["sender", text],["sender", text]}
+let conv = [];
+
+// Shuts down server if > maxConnect
+const maxConnect = 1;
+
+// Format {[Level index, ["text", "text"]]}
+let swipes = []
+// Index of current swipe in the swipe nested array.
+let swipeIndex = 0;
+
+// Previous query
 let prevQuery = "";
-let prevModel = "";
 
-const enableLogging = false
 
-let selectedEditIndex = 0;
-let currLevelEdits = [];
+// ==============================================
+// Set up Express
+// ==============================================
 
-console.dir(ip.address());
 const app = express();
-app.use(express.json());
-const PORT = process.env.PORT || 3000;
-const upload = multer({ dest: 'uploads/' });
+const port = 3000;
+const ipAddr = ip.address();
+app.use(cors());
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
+
+app.listen(port, () => {
+  console.log(`Server active on ${ipAddr}:${port}`);
+
 });
 
-
-app.listen(PORT, () => {
-  console.log("Server Listening on PORT:", PORT);
-  console.log(ip.address() + ":" + PORT + "/post?model=llama3.1&query=");
+// ==============================================
+// Express Endpoints
+// ==============================================
+app.get('/api/modals', async (req, res) => {
+  const modals = await getModals();
+  res.send(modals);
 });
 
-app.get('/', (req, res) => {
-  res.send('Clipper: Online and listening.');
-});
-app.get('/post', async (req, res) => {
-  const { model, query } = req.query;
-  console.log("received " + model);
- prevModel = model;
- prevQuery = query;
-  if (verify(query)) {
-    try {
-      const response = await sendQuery(model, query);
-      if(enableLogging){
-        logData(req, response);
-      }
-      res.send(response);
-
-    } catch (error) {
-    }
-  } else {
-    console.log("error");
-    res.send(`Invalid data`);
-  }
-});
-
-app.get('/new', (req, res) => {
-  console.log("received clear conversation");
-  conversation = [];
-  currLevelEdits = [];
-  res.send("Chat cleared");
-});
-
-app.get('/refresh', async (req, res) => {
-  const model = req.query.model;
-  console.log("Refresh message received with " + model);
-  const response = await refreshMessage(model);
-  res.send(response);
-});
-
-app.get('/prev', (req, res) => {
-  console.log("prev received");
-  const newText = prevResponse();
-  console.log(newText);
-  res.send(newText);
-})
-
-app.get('/forward', (req, res) => {
-  console.log("forwarding received");
-  const newText = forwardResponse();
-  console.log(newText);
-  res.send(newText);
-})
-
-app.get('/debug', (req, res) => {
-  console.log()
-  console.log("Debug:")
-  console.log()
-  console.log(prevModel);
-  console.log("______")
-  console.log()
+app.get('/api/post', async (req, res) => {
+  const  { model, query} = req.query;
+  console.log(`Received: ${model} -> ${query.substr(0, 40)}`);
   
+  try {
+    await sendMessage(query, model);
+    addLevel();
+  prevQuery = query;
+} catch (e) {
+  error(e);
+}
 });
 
-app.get('/api/models', async (req, res) =>  {
+app.get('/api/refresh', async (req, res) => {
+  const {model} = req.query;
   try {
-    const models = await getLocal()
-   res.send(models)
-    
-  } catch (error) {
-    warn("Serve Ollama. Unable to run ollama accounts");
+    refresh(model);
+  } catch (e) {
+    error(e);
+  }
+})
+
+app.get('/api/backwards', async (req, res) => {
+  const newMessage = swipeBackwards();
+
+  if (newMessage == "<ERR>"){
+    res.sendStatus('500');
+  } else {
+    res.send(newMessage);
   }
 });
 
-function verify(query) {
-  if (query.length < 1) {
-    return false;
-  } else {
-    return true;
+// ==============================================
+// WebSockets
+// ==============================================
+
+const wss = new WebSocketServer({host: ipAddr, port: 8080})
+
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+    console.log("Client connected");
+    clients.add(ws);
+
+    if(clients.size > maxConnect){
+      error(`More then ${maxConnect} people connnected, shutting down!`);
+      wss.close();
+    }
+
+    ws.on('close', () => {
+      console.log("Client left");
+      clients.delete(ws);
+    })
+    
+    ws.on('error', (err) => {
+      console.log("Client crashed: " , err);
+      clients.delete(ws);
+    })
+})
+
+function sendToFront(content){
+  for (const client of clients){
+    if(client.readyState === client.OPEN){
+      client.send(content);
+    }
+  }
+}
+
+// ==============================================
+// Ollama Functions
+// ==============================================
+
+async function getModals(){
+  try {
+    const modals = await ollama.list();
+    if(modals){
+      return modals;
+    } else {
+      warn("Could not retrieve modals");
+      return "";
+    }
+  } catch (e) {
+  error("Ollama service not detected. Try running `ollama serve`");
   }
 }
 
 
-async function sendQuery(model, query) {adjustHeight();
+
+async function sendMessage(query, model, miD=null, incrementIndex=true){
+
+  const userInp = {role: "user", content: query}
+  const history = formatConversation(conv);
   const response = await ollama.chat({
     model: model,
     messages: [
-      ...conversation,
-      { role: 'user', content: query }
+      ...history,
+      userInp
     ],
-  })
-  conversation.push({ role: 'user', content: query });
-  conversation.push(response.message);
-  currLevelEdits.push(response.message.content)
-  console.log(conversation);
-  return response;
-}
 
-
-async function getLocal(){
-  const response = await ollama.list();
-  return response;
-}
-
-function logData(req, res) {
-  const today = Date.now();
-
-
-
-  const requestData = `
-    Query: ${JSON.stringify(req.query, null, 2)}
-    IP: ${req.ip}
-    URL: ${req.originalUrl}
-    Method: ${req.method}
-    Body: ${JSON.stringify(req.body, null, 2)}
-    Headers: ${JSON.stringify(req.headers, null, 2)}
-    Cookies: ${JSON.stringify(req.cookies, null, 2)}
-    Protocol: ${req.protocol}
-    Hostname: ${req.hostname}
-    Response: ${JSON.stringify(res, null, 5)}
-  `;
-
-  let externalCall = "Ext";
-  if (req.ip.includes(ip.address())) {
-    externalCall = "";
-  }
-
-  try {
-    fs.appendFile(`logs/${today}${externalCall}.txt`, requestData, function (err) {
-      if (err) throw err;
-      console.log('Log saved!');
-    });
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-
-
-
-
-
-// File reading / uploading
-app.post('/upload', upload.single('file'), (req, res) => {
-  const filePath = req.file.path;
-  
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading file:', err);
-      return res.status(500).json({ error: 'Failed to read file.' });
-    }
+    stream: true
     
-    
-    importConversation(data);
-    
-    fs.unlink(filePath, (err) => {
-      if (err) console.error('Error deleting file:', err);
-    });
-    console.log("Chat imported.");
-    res.send("Succes!");
   });
-});
 
+  if(!miD){
 
-function importConversation(data) {
-
-  const newConv = [];
-  // Check import type
-  if (data.includes("<START>")) {
-    const conversationInp = data.split("<START>")[1];
-    const messages = conversationInp.split('}}:');
-
-
-    messages.forEach(chunk => {
-      if (chunk.includes('{{user')) {
-        
-        const message = simulateMessage("assistant", chunk, "{{user");
-        newConv.push(message);
-      } else {
-        const message = simulateMessage("user", chunk, "{{char");
-        newConv.push(message);
-      }
-    });
-    conversation = newConv;
+    sendToFront("<Start>");
   } else {
+    sendToFront(miD);
+  }
+  let botMessage = "";
+  for await (const part of response){
+    sendToFront(part.message.content);
+    botMessage = botMessage.concat(part.message.content);
+  }
+  sendToFront("<End>");
+  const botResp = {role: "assistant", content: botMessage};
+  conv.push({index, userInp, botResp});
+  
+  // Send text to swipe array
+  
+  if(incrementIndex){
+    index++
+    addToSwipe(index, botResp.content);
+  }
+  return botResp;
+  
 
+
+}
+
+
+
+
+
+
+
+
+// ==============================================
+// Util functions
+// ==============================================
+async function warn(text){
+  const format = ["", "", text,"",""];
+  format.forEach((elem) => {
+    console.log(elem);
+  });
+}
+async function error(text){
+  const format = ["", "===========", text,"===========",""];
+  format.forEach((elem) => {
+    console.log(elem);
+  });
+}
+async function dbg(text){
+  if(debug){
+    console.log(text);
   }
 }
 
 
 
-function simulateMessage(role, text, remove) {
-  return { role: role, content: text.replace(remove, "")};
+
+// ==============================================
+// Format functions
+// ==============================================
+
+function formatConversation(oldConv){
+
+  let formatConv = [];
+  oldConv.forEach(element => {
+    // Each element holds both the user and assistant message in either another nested array.
+        formatConv.push({"role": "user", "content": element["userInp"]["content"]});
+        formatConv.push({"role": "assistant", "content": element["botResp"]["content"]});
+  });
+
+  return formatConv;
 }
 
+// 
+// Refresh functions
+// 
+
+
+async function refresh(model){
+
+  // Remove the last entry of current conversation
+  conv.pop();
+
+  // generate new response
+  const botResp = await sendMessage(prevQuery, model, "<Refresh>", false);
+
+  // increase swipe index
+  swipeIndex++;
+
+  // store new response
+  addToSwipe(index, botResp.content);
+
+}
+
+// 
+// Swipe functions
+// 
+function addLevel(){
+  swipes.push([index, []]);
+}
+function addToSwipe(index, text){
+
+  swipes.forEach(element => {
+
+    console.log(element[0] + " / " + index);
+    console.log(typeof element[0], typeof index); // helpful debug
+    if(element[0] == index){
+      console.log("Swipe added succesfully " + text);
+      element[1].push(text);
+    }
+  });
+
+}
+
+function swipeForward(){
 
 
 
-async function refreshMessage(model){
-
+}
+function swipeBackwards(){
   
-  const newConv = conversation.slice(0, -2);
-  conversation = newConv;
-  console.log("Resseting with " + model + " And " + prevQuery)
-  const response = await sendQuery(model, prevQuery);
+  let prevBotResp;
 
-  selectedEditIndex++;
-  return response;
+  swipeIndex--;
 
-}
-
-function prevResponse(){
-  selectedEditIndex--;
-  const newText = currLevelEdits[selectedEditIndex];
-  console.log(newText);
-  if (validateResponse(newText)) setMessage(newText);
-  setMessage(newText);
-  return newText;
-}
-function forwardResponse(){
-  selectedEditIndex++;
-  const newText = currLevelEdits[selectedEditIndex];
-  if (validateResponse(newText)) setMessage(newText);
-  return newText;
-}
-function validateResponse(response){
-  if(response !== undefined){
-    return true
+  swipes.forEach(element => {
+    
+    if(element[0] == index){
+      prevBotResp = element[1][swipeIndex];
+    }
+  });
+  if (prevBotResp == undefined || prevBotResp.length < 1){
+    warn("Unable to swipe backwards | prevBotResp is empty: " + prevBotResp);
+    return "<ERR>";
   }
-  return false;
-}
 
 
-// Only use to edit bot messages
-function setMessage(text){
-  const message = simulateMessage("assistant", text);
-  const newConv = conversation.slice(0, -1);
-  newConv.push(message);
-  
-}
-function warn(text){
-  console.log("");
-  console.log("===========");
-  console.log(text);
-  console.log("===========");
-  console.log("");
+  // console.log("A: " + prevBotResp);
+  conv[conv.length-1]["botResp"] = prevBotResp;
+  return prevBotResp;
 }

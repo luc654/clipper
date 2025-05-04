@@ -1,4 +1,5 @@
 const profilePic = 'img/profilePic.jpg'
+let chatId = 0;
 
 function addMessageUser(text) {
     prependMessage(text, 'Testington namus', profilePic, 'end');
@@ -11,6 +12,7 @@ function addMessageBot(text) {
 
 function removeLastMessage() {
     document.getElementById('chatbox').firstChild.remove();
+    chatId--;
 }
 
 function prependMessage(text, user, pic, alignment) {
@@ -33,12 +35,18 @@ function prependMessage(text, user, pic, alignment) {
     
     let messageDiv = document.createElement('div');
     messageDiv.classList = 'bg-[#2F3335] mt-1 rounded-xl max-w-[65%] w-fit text-gray-200 p-3 py-4';
+    messageDiv.id = chatId;
     messageDiv.innerHTML = text;
 
     wrapper.append(userInfo, messageDiv);
     document.getElementById('chatbox').prepend(wrapper);
+    chatId++;
 }
 
+function appendMessage(content, id){
+    if(!id) {id = chatId - 1};
+    document.getElementById(id).innerHTML += content;
+}
 
 function prependChatDivider(){
     const linebreak = document.createElement('div');
