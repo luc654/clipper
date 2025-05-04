@@ -76,6 +76,7 @@ app.get('/api/post', async (req, res) => {
 
 app.get('/api/refresh', async (req, res) => {
   const {model} = req.query;
+  dbg("Received refresh");
   try {
     refresh(model);
   } catch (e) {
@@ -174,6 +175,7 @@ async function getModals(){
 
 async function sendMessage(query, model, miD=null, incrementIndex=true){
   const userInp = {role: "user", content: query}
+
   const history = formatConversation(conv);
   const response = await ollama.chat({
     model: model,
@@ -209,7 +211,7 @@ async function sendMessage(query, model, miD=null, incrementIndex=true){
 
   conv.push(mess);
 
-  
+  error(history);
   // Send text to swipe array
   
   if(incrementIndex){
@@ -281,6 +283,8 @@ async function refresh(model){
 
   // generate new response
   const botResp = await sendMessage(prevQuery, model, "<Refresh>", false);
+
+  dbg("Refresh done");
 
   // increase swipe index
   swipeIndex++;
