@@ -1,7 +1,7 @@
 import ollama from 'ollama'
 import { config } from 'dotenv';
 import express, { query, response } from 'express';
-import fs, { link } from 'fs';
+import fs, { copyFileSync, link } from 'fs';
 import ip from "ip";
 import multer from "multer";
 import cors from "cors";
@@ -33,6 +33,9 @@ let swipeIndex = 0;
 
 // Previous query
 let prevQuery = "";
+
+// Used for chat import
+const upload = multer({ dest: 'uploads/'});
 
 
 // ==============================================
@@ -89,6 +92,21 @@ app.get('/api/backwards', async (req, res) => {
     res.send(newMessage);
   }
 });
+
+app.post('/api/import', upload.single('file'), (req, res) => {
+  const filePath = req.file.path;
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if(err){
+      error(err);
+      return res.status(500).json({ error: 'Failed to read file.'});
+    }
+    
+    importChat(data);
+    res.status(200).json({ message: 'Chat imported!'});
+  });
+})
+
 
 // ==============================================
 // WebSockets
@@ -227,6 +245,7 @@ function formatConversation(oldConv){
 
   let formatConv = [];
   oldConv.forEach(element => {
+    console.log(element);
     // Each element holds both the user and assistant message in either another nested array.
         formatConv.push({"role": "user", "content": element["userInp"]["content"]});
         formatConv.push({"role": "assistant", "content": element["botResp"]["content"]});
@@ -278,6 +297,25 @@ function addToSwipe(index, text){
 
 function swipeForward(){
 
+  
+  let prevBotResp;
+
+  swipeIndex++;
+
+  swipes.forEach(element => {
+    
+    if(element[0] == index){
+      prevBotResp = element[1][swipeIndex];
+    }
+  });
+  if (prevBotResp == undefined || prevBotResp.length < 1){
+    warn("Unable to swipe forwards | prevBotResp is empty: " + prevBotResp);
+    return "<ERR>";
+  }
+
+
+  conv[conv.length-1]["botResp"] = prevBotResp;
+  return prevBotResp;
 
 
 }
@@ -302,4 +340,83 @@ function swipeBackwards(){
   // console.log("A: " + prevBotResp);
   conv[conv.length-1]["botResp"] = prevBotResp;
   return prevBotResp;
+}
+
+
+
+
+
+
+
+// 
+// Chat import
+// 
+
+
+// Format {index, ["user", text],["assistant", text]}
+
+
+function importChat(inputStr) {
+  const newConv = [];
+
+  
+  const lines = inputStr.split(/\r?\n/).filter(Boolean); 
+
+  
+  let input = lines.map(line => JSON.parse(line));
+
+  const charName = input[0].character_name;
+  const convStart = input[1].name;
+
+  let is ;
+  let ot ;
+  if(convStart === charName){
+    is = charName;
+    ot = "You";
+  } else {
+    is = "You";
+    ot = charName;
+  }
+
+  // input = input.shift()
+
+  // Check who send it, if its the same as the old add the message to the end. if its not then 
+  let prevName = "";
+
+  let formattedConv = [];
+  const keys = Object.keys(input); // get the keys of the object
+  
+  let ii = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const elem = input[key];
+    
+    if (elem.name === is) {
+    if(ot === "You"){
+      if(ii == 0 ){
+        const mess = [
+          ii,
+          ["User", "Start chat"],
+          ["Assistant", elem.mes]
+        ];
+        formattedConv.push(mess);
+        ii++;
+      } else {
+        const mess = [
+          ii,
+          ["User", input[i - 1].mes],
+          ["Assistant", elem.mes]
+        ];
+        
+        formattedConv.push(mess);
+        ii++;
+
+      };
+    }
+    }
+
+  }
+  
+  warn(formattedConv);
+  conv = formattedConv;
 }
