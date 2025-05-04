@@ -79,8 +79,10 @@ app.get('/api/refresh', async (req, res) => {
   dbg("Received refresh");
   try {
     refresh(model);
+    res.send("Refresh done");
   } catch (e) {
     error(e);
+    res.send(e);
   }
 })
 
