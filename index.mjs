@@ -165,7 +165,6 @@ async function getModals(){
 
 
 async function sendMessage(query, model, miD=null, incrementIndex=true){
-
   const userInp = {role: "user", content: query}
   const history = formatConversation(conv);
   const response = await ollama.chat({
@@ -191,16 +190,25 @@ async function sendMessage(query, model, miD=null, incrementIndex=true){
     botMessage = botMessage.concat(part.message.content);
   }
   sendToFront("<End>");
-  const botResp = {role: "assistant", content: botMessage};
-  conv.push({index, userInp, botResp});
+
+  const mess = [
+    index,
+    {
+      "User": query,
+      "Assistant": botMessage
+    }
+  ];
+
+  conv.push(mess);
+
   
   // Send text to swipe array
   
   if(incrementIndex){
     index++
-    addToSwipe(index, botResp.content);
+    addToSwipe(index, botMessage);
   }
-  return botResp;
+  return botMessage;
   
 
 
@@ -245,10 +253,9 @@ function formatConversation(oldConv){
 
   let formatConv = [];
   oldConv.forEach(element => {
-    console.log(element);
     // Each element holds both the user and assistant message in either another nested array.
-        formatConv.push({"role": "user", "content": element["userInp"]["content"]});
-        formatConv.push({"role": "assistant", "content": element["botResp"]["content"]});
+        formatConv.push({"role": "user", "content": element[1]["User"]});
+        formatConv.push({"role": "assistant", "content": element[1]["Assistant"]});
   });
 
   return formatConv;
@@ -285,10 +292,7 @@ function addToSwipe(index, text){
 
   swipes.forEach(element => {
 
-    console.log(element[0] + " / " + index);
-    console.log(typeof element[0], typeof index); // helpful debug
     if(element[0] == index){
-      console.log("Swipe added succesfully " + text);
       element[1].push(text);
     }
   });
@@ -337,7 +341,6 @@ function swipeBackwards(){
   }
 
 
-  // console.log("A: " + prevBotResp);
   conv[conv.length-1]["botResp"] = prevBotResp;
   return prevBotResp;
 }
@@ -393,30 +396,32 @@ function importChat(inputStr) {
     
     if (elem.name === is) {
     if(ot === "You"){
-      if(ii == 0 ){
+      if (ii === 0) {
         const mess = [
           ii,
-          ["User", "Start chat"],
-          ["Assistant", elem.mes]
+          {
+            "User": "Start chat",
+            "Assistant": elem.mes
+          }
         ];
         formattedConv.push(mess);
         ii++;
       } else {
         const mess = [
           ii,
-          ["User", input[i - 1].mes],
-          ["Assistant", elem.mes]
+          {
+            "User": input[i - 1]?.mes ?? "",
+            "Assistant": elem.mes
+          }
         ];
-        
         formattedConv.push(mess);
         ii++;
-
-      };
+      }
+      
     }
     }
 
   }
-  
-  warn(formattedConv);
+  console.log("Succes");
   conv = formattedConv;
 }
