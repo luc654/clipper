@@ -6,7 +6,7 @@ async function uploadFile() {
     const formData = new FormData();
     formData.append('file', file);
     try {
-        const response = await fetch(`http://${ip}/upload`, { method: 'POST', body: formData });
+        const response = await fetch(`http://${ip}/api/import`, { method: 'POST', body: formData });
         const result = await response.json();
         console.log('File content:', result.content);
         alert('File uploaded successfully!');
