@@ -52,5 +52,9 @@ async function forwardMessage() {
 }
 
 function debugProcess() {
-    const response = fetch(`http://${ip}/debug`, {});
-}
+    fetch(`http://${ip}/api/debug`)
+      .then(res => res.text())
+      .then(data => console.log("Debug response:", data))
+      .catch(err => console.error("Fetch failed:", err));
+  }
+  

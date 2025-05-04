@@ -107,6 +107,14 @@ app.post('/api/import', upload.single('file'), (req, res) => {
   });
 })
 
+app.get('/api/debug', (req, res) => {
+  console.log("Debugging:");
+  error("Debug");
+  warn(conv);
+  res.send("Debug log complete");
+
+});
+
 
 // ==============================================
 // WebSockets
