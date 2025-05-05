@@ -370,13 +370,7 @@ function swipeBackwards(){
 // 
 
 
-// Format {index, ["user", text],["assistant", text]}
-
-
-function importChat(inputStr) {
-  const newConv = [];
-
-  
+function importChat(inputStr) {  
   const lines = inputStr.split(/\r?\n/).filter(Boolean); 
 
   
@@ -385,6 +379,7 @@ function importChat(inputStr) {
   const charName = input[0].character_name;
   const convStart = input[1].name;
 
+  console.log(`Character: ${charName}`)
   let is ;
   let ot ;
   if(convStart === charName){
@@ -395,13 +390,10 @@ function importChat(inputStr) {
     ot = charName;
   }
 
-  // input = input.shift()
 
-  // Check who send it, if its the same as the old add the message to the end. if its not then 
-  let prevName = "";
 
   let formattedConv = [];
-  const keys = Object.keys(input); // get the keys of the object
+  const keys = Object.keys(input); 
   
   let ii = 0;
   for (let i = 0; i < keys.length; i++) {
@@ -414,7 +406,7 @@ function importChat(inputStr) {
         const mess = [
           ii,
           {
-            "User": "Start chat",
+            "User": `Start chat. You are ${charName}`,
             "Assistant": elem.mes
           }
         ];
@@ -436,6 +428,6 @@ function importChat(inputStr) {
     }
 
   }
-  console.log("Succes");
+  console.log("Chat importing success");
   conv = formattedConv;
 }
