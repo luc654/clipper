@@ -296,9 +296,9 @@ async function refresh(model){
 
 }
 
-// 
+// ==============================================
 // Swipe functions
-// 
+// ==============================================
 function addLevel(){
   swipes.push([index, []]);
 }
@@ -314,7 +314,6 @@ function addToSwipe(index, text){
 }
 
 function swipeForward(){
-
   
   let prevBotResp;
 
@@ -359,7 +358,7 @@ function swipeBackwards(){
   return prevBotResp;
 }
 
-
+1
 
 
 
@@ -379,7 +378,7 @@ function importChat(inputStr) {
   const charName = input[0].character_name;
   const convStart = input[1].name;
 
-  console.log(`Character: ${charName}`)
+  console.log(`Character: ${charName}`);
   let is ;
   let ot ;
   if(convStart === charName){
