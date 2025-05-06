@@ -58,3 +58,10 @@ function debugProcess() {
       .catch(err => console.error("Fetch failed:", err));
   }
   
+
+async function retrieveConversation(){
+    const response = await fetch(`http://${ip}/api/conversation`);
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    const conversation = await response.json();
+    return conversation;
+};

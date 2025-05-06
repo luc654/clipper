@@ -119,6 +119,15 @@ app.get('/api/debug', (req, res) => {
 });
 
 
+
+app.get('/api/conversation', async (req, res) => {
+  
+  if(conv.length > 0 ){
+    console.log("Uploading current conversation...");
+  }
+  res.send(conv);
+});
+
 // ==============================================
 // WebSockets
 // ==============================================
@@ -432,8 +441,6 @@ function importChat(inputStr) {
   console.log("Chat importing success");
   conv = formattedConv;
 }
-
-
 
 
 // ==============================================

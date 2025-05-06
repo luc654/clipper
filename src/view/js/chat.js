@@ -65,3 +65,13 @@ function styleInp(e){
         textAreaWrapper.style.height = "56px";
     }
 }
+
+
+async function checkForChatImport(){
+    const safedConv = await retrieveConversation();
+
+    safedConv.forEach(element => {
+        addMessageUser(element[1]["User"]);
+        addMessageBot(element[1]["Assistant"]);
+    });
+}
