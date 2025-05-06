@@ -7,7 +7,7 @@ import multer from "multer";
 import cors from "cors";
 import { WebSocket } from 'ws';
 import { WebSocketServer } from 'ws';
-import { text } from 'stream/consumers';
+import { json, text } from 'stream/consumers';
 import { normalize } from 'path';
 
 // ==============================================
@@ -126,6 +126,21 @@ app.get('/api/conversation', async (req, res) => {
     console.log("Uploading current conversation...");
   }
   res.send(conv);
+});
+
+app.get('/api/clear', async (req, res) => {
+  const {index} = req.query;
+
+  const ccStatus = clearChat(index);
+
+  if(ccStatus){
+    console.log("Chat cleared successfully");
+    res.status(200);
+  } else {
+    console.log("Error clearing chat.");
+    res.status(404);
+  }
+
 });
 
 // ==============================================
@@ -441,6 +456,38 @@ function importChat(inputStr) {
   console.log("Chat importing success");
   conv = formattedConv;
 }
+
+
+
+// ==============================================
+// Clear chat function
+// ==============================================
+
+
+function clearChat(removeAmount){
+
+
+  if(removeAmount > index){
+    return false;
+  }
+
+  try {
+    if(removeAmount == 0){
+      conv = [];
+      swipeIndex = 0;
+      swipes = [];
+    } else {
+      conv = conv.slice(index - removeAmount);
+      swipeIndex = swipeIndex - removeAmount;
+      swipes = swipes.slice(index - removeAmount);
+    }
+  } catch (error) {
+    return false;
+  }
+  return true;
+
+}
+
 
 
 // ==============================================

@@ -17,7 +17,7 @@ async function send() {
 }
 
 async function clear() {
-    const response = await fetch(`http://${ip}/new`);
+    const response = await fetch(`http://${ip}/api/clear?index=0`);
     if (!response.ok) throw new Error(`Response status: ${response.status}`);
     console.log("Chat cleared successfully");
     prependChatDivider();
