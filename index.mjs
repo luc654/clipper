@@ -132,7 +132,8 @@ wss.on('connection', (ws) => {
     clients.add(ws);
 
     if(clients.size > maxConnect){
-      error(`More then ${maxConnect} people connnected, shutting down!`);
+      error(`More than ${maxConnect} people connnected, shutting down!`);
+      emergencyShutdown();
       wss.close();
     }
 
@@ -236,6 +237,7 @@ async function sendMessage(query, model, miD=null, incrementIndex=true){
 // ==============================================
 // Util functions
 // ==============================================
+
 async function warn(text){
   const format = ["", "", text,"",""];
   format.forEach((elem) => {
@@ -364,9 +366,9 @@ function swipeBackwards(){
 
 
 
-// 
+// ==============================================
 // Chat import
-// 
+// ==============================================
 
 
 function importChat(inputStr) {  
@@ -429,4 +431,15 @@ function importChat(inputStr) {
   }
   console.log("Chat importing success");
   conv = formattedConv;
+}
+
+
+
+
+// ==============================================
+// Shutdown Utils
+// ==============================================
+
+function emergencyShutdown(){
+  process.exit(1);
 }
