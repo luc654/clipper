@@ -49,6 +49,7 @@ function appendMessage(content, id){
 }
 
 function prependChatDivider(){
+    console.log("called");
     const linebreak = document.createElement('div');
             linebreak.classList = 'w-full rounded-full  bg-[#2F3335] px-4 py-2 mt-12 mb-4';
 
@@ -70,8 +71,11 @@ function styleInp(e){
 async function checkForChatImport(){
     const safedConv = await retrieveConversation();
 
-    safedConv.forEach(element => {
+    safedConv[0].forEach(element => {
         addMessageUser(element[1]["User"]);
         addMessageBot(element[1]["Assistant"]);
     });
+
+    // Set current modal to previous safed modal
+    document.getElementById('model').value = safedConv[1];
 }

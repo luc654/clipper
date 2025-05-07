@@ -34,6 +34,9 @@ let swipeIndex = 0;
 // Previous query
 let prevQuery = "";
 
+// Previous modal 
+let prevModal = "";
+
 // Used for chat import
 const upload = multer({ dest: 'uploads/'});
 
@@ -121,11 +124,10 @@ app.get('/api/debug', (req, res) => {
 
 
 app.get('/api/conversation', async (req, res) => {
-  
   if(conv.length > 0 ){
     console.log("Uploading current conversation...");
   }
-  res.send(conv);
+  res.send([conv, prevModal]);
 });
 
 app.get('/api/clear', async (req, res) => {
@@ -135,10 +137,10 @@ app.get('/api/clear', async (req, res) => {
 
   if(ccStatus){
     console.log("Chat cleared successfully");
-    res.status(200);
+    res.status(200).json({message: 'Chat cleared!'});
   } else {
     console.log("Error clearing chat.");
-    res.status(404);
+    res.status(404).json({message: `Failed to clear chat? index: ${index}`});
   }
 
 });
@@ -202,6 +204,7 @@ async function getModals(){
 
 async function sendMessage(query, model, miD=null, incrementIndex=true){
   const userInp = {role: "user", content: query}
+  prevModal = model;
 
   const history = formatConversation(conv);
   const response = await ollama.chat({
