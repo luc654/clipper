@@ -15,6 +15,8 @@ const socket = new WebSocket(`ws://${ip.split(":")[0]}:8080`);
     } else if (event.data == "<Refresh>"){
         addMessageBot("");
         console.log("aaa");
+    } else if (event.data == "<NUKE>"){
+      nukeChat();
     }
 
      else {

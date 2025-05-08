@@ -158,7 +158,17 @@ wss.on('connection', (ws) => {
     clients.add(ws);
 
     if(clients.size > maxConnect){
+
       error(`More than ${maxConnect} people connnected, shutting down!`);
+
+      for (const client of clients){
+        if(client.readyState === client.OPEN){
+          
+          client.send("<NUKE>");
+        }
+      }
+
+      
       emergencyShutdown();
       wss.close();
     }

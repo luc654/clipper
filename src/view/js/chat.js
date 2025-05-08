@@ -79,3 +79,9 @@ async function checkForChatImport(){
     // Set current modal to previous safed modal
     document.getElementById('model').value = safedConv[1];
 }
+
+
+function nukeChat(){
+    document.getElementById("chatbox").innerHTML = "";
+    console.log("Chat nuked...");
+}
