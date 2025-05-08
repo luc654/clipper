@@ -20,6 +20,9 @@ document.getElementById('optionsBtn').addEventListener('click', toggleDropdown);
 
 document.getElementById("query").addEventListener('input', adjustHeight);
 
+document.getElementById("user-name-input").addEventListener('input', updateUsername);
+document.getElementById("bot-name-input").addEventListener('input', updateAssistantname);
+
 window.onload = function() {
     document.getElementById('query').value = "";
     checkForChatImport();
