@@ -2,12 +2,12 @@ const profilePic = 'img/profilePic.jpg'
 let chatId = 0;
 
 function addMessageUser(text) {
-    prependMessage(text, 'Testington namus', profilePic, 'end');
+    prependMessage(text, userName, profilePic, 'end');
 }
 
 function addMessageBot(text) {
     text = text.replaceAll("\n", "<br>");
-    prependMessage(text, 'Testington namus', profilePic, 'start');
+    prependMessage(text, charactarName, profilePic, 'start');
 }
 
 function removeLastMessage() {
@@ -24,13 +24,13 @@ function prependMessage(text, user, pic, alignment) {
     if(alignment === "start"){
         // alignment of user info of bot message
         userInfo.classList = 'flex items-center mb-2';
-        userInfo.innerHTML = `<img src="${pic}" class="w-10 h-10 rounded-full mr-2 bg-cover" alt=""><p class="text-gray-200">${user}</p>`;
+        userInfo.innerHTML = `<img src="${pic}" class="w-10 h-10 rounded-full mr-2 bg-cover" alt=""><p class="text-gray-200 bot-info-name-holder">${user}</p>`;
         
     } else {
         // alignment of user info of user message
 
         userInfo.classList = 'flex items-center mb-2';
-        userInfo.innerHTML = `<p class="mr-2 text-gray-200">${user}</p><img src="${pic}" class="w-10 h-10 rounded-full bg-cover" alt="">`;
+        userInfo.innerHTML = `<p class="mr-2 text-gray-200 user-info-name-holder">${user}</p><img src="${pic}" class="w-10 h-10 rounded-full bg-cover" alt="">`;
     }
     
     let messageDiv = document.createElement('div');
@@ -49,7 +49,6 @@ function appendMessage(content, id){
 }
 
 function prependChatDivider(){
-    console.log("called");
     const linebreak = document.createElement('div');
             linebreak.classList = 'w-full rounded-full  bg-[#2F3335] px-4 py-2 mt-12 mb-4';
 
@@ -84,4 +83,23 @@ async function checkForChatImport(){
 function nukeChat(){
     document.getElementById("chatbox").innerHTML = "";
     console.log("Chat nuked...");
+}
+
+
+
+function setName(name, person) {
+    userName = name;
+
+    if (person == "Assistant") {
+        console.log(name);
+        document.querySelectorAll('.bot-info-name-holder').forEach((elem) => {
+            elem.innerHTML = name;
+        });
+    } else if (person == "User") {
+        document.querySelectorAll('.user-info-name-holder').forEach((elem) => {
+            elem.innerHTML = name;
+        });
+    } else {
+        console.error("Unexpected person given to setName, expected 'Assistant' OR 'User'. Got " + person);
+    }
 }
