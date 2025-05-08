@@ -38,7 +38,6 @@ function handleKeyup(event) {
 document.addEventListener("DOMContentLoaded", showModels);
 async function showModels() {
     try {
-        console.log(ip);
         const response = await fetch(`http://${ip}/api/modals`);
         const models = await response.json();
         document.getElementById('model').innerHTML = models.models.map(m => `<option value="${m.name}">${m.name}</option>`).join('');

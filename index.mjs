@@ -251,8 +251,6 @@ async function sendMessage(query, model, miD=null, incrementIndex=true){
 
   conv.push(mess);
 
-  error(history);
-  // Send text to swipe array
   
   if(incrementIndex){
     index++
@@ -324,8 +322,6 @@ async function refresh(model){
 
   // generate new response
   const botResp = await sendMessage(prevQuery, model, "<Refresh>", false);
-
-  dbg("Refresh done");
 
   // increase swipe index
   swipeIndex++;

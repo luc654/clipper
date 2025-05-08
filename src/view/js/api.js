@@ -17,7 +17,6 @@ async function send() {
 }
 
 async function clear() {
-    console.log("Casfd");
     const response = await fetch(`http://${ip}/api/clear?index=0`).then(res => res.text())
     .then(data => console.log(data))
     .catch(err => console.error("Fetch failed:", err));
