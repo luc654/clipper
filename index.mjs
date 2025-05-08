@@ -37,6 +37,14 @@ let prevQuery = "";
 // Previous modal 
 let prevModal = "";
 
+// Name of User
+let userName = "You";
+
+// Name of Assistant;
+let assistantName = "Assistant";
+
+
+
 // Used for chat import
 const upload = multer({ dest: 'uploads/'});
 
@@ -119,6 +127,27 @@ app.get('/api/debug', (req, res) => {
   warn(conv);
   res.send("Debug log complete");
 
+});
+
+app.get('/api/set/user', (req, res) => {
+  const {newName} = req.query;
+  userName = newName;
+  res.send(`Set Users name to ${newName}`);
+  dbg(`Set Users name to ${newName}`);
+});
+
+app.get('/api/set/assistant', (req, res) => {
+  const {newName} = req.query;
+  assistantName = newName;
+  res.send(`Set Assistant name to ${newName}`);
+  dbg(`Set Assistant name to ${newName}`);
+});
+
+app.get('/api/get/names', (req, res) => {
+  res.json({
+    Assistant: assistantName,
+    User: userName
+  })
 });
 
 
@@ -411,6 +440,9 @@ function importChat(inputStr) {
   let input = lines.map(line => JSON.parse(line));
 
   const charName = input[0].character_name;
+  if(charName.length > 0){
+    assistantName = charName;
+  };
   const convStart = input[1].name;
 
   console.log(`Character: ${charName}`);

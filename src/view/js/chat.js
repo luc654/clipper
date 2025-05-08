@@ -68,6 +68,7 @@ function styleInp(e){
 
 
 async function checkForChatImport(){
+    // Load safed Conversation
     const safedConv = await retrieveConversation();
 
     safedConv[0].forEach(element => {
@@ -77,6 +78,15 @@ async function checkForChatImport(){
 
     // Set current modal to previous safed modal
     document.getElementById('model').value = safedConv[1];
+
+    // Load names
+
+    const namesArr = await getNamesApi();
+    setName(namesArr["Assistant"], "Assistant");
+    setName(namesArr["User"], "User");
+
+    document.getElementById('user-name-input').value = namesArr["User"];
+    document.getElementById('bot-name-input').value = namesArr["Assistant"];
 }
 
 
@@ -103,3 +113,5 @@ function setName(name, person) {
         console.error("Unexpected person given to setName, expected 'Assistant' OR 'User'. Got " + person);
     }
 }
+
+

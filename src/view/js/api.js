@@ -65,3 +65,29 @@ async function retrieveConversation(){
     const conversation = await response.json();
     return conversation;
 };
+
+
+async function setUserApi(name){
+    try {
+        const response = await fetch(`http://${ip}/api/set/user?newName=${name}`);
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function setAssistantApi(name){
+    try {
+        const response = await fetch(`http://${ip}/api/set/assistant?newName=${name}`);
+        if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function getNamesApi(){
+    const response = await fetch(`http://${ip}/api/get/names`);
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    const names = await response.json();
+    return names;
+
+}
