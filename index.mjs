@@ -75,10 +75,9 @@ app.get('/api/modals', async (req, res) => {
 app.get('/api/post', async (req, res) => {
   const  { model, query} = req.query;
   console.log(`Received: ${model} -> ${query.substr(0, 40)}`);
-  
+  clearSwipes();
   try {
     await sendMessage(query, model);
-    addLevel();
   prevQuery = query;
 } catch (e) {
   error(e);
@@ -99,7 +98,15 @@ app.get('/api/refresh', async (req, res) => {
 
 app.get('/api/backwards', async (req, res) => {
   const newMessage = swipeBackwards();
+  if (newMessage == "<ERR>"){
+    res.sendStatus('500');
+  } else {
+    res.send(newMessage);
+  }
+});
 
+app.get('/api/forward', async (req, res) => {
+  const newMessage = swipeForward();
   if (newMessage == "<ERR>"){
     res.sendStatus('500');
   } else {
@@ -108,8 +115,9 @@ app.get('/api/backwards', async (req, res) => {
 });
 
 app.post('/api/import', upload.single('file'), (req, res) => {
+  dbg("Attempting to import chat");
+  
   const filePath = req.file.path;
-
   fs.readFile(filePath, 'utf8', (err, data) => {
     if(err){
       error(err);
@@ -123,7 +131,8 @@ app.post('/api/import', upload.single('file'), (req, res) => {
 
 app.get('/api/debug', (req, res) => {
   console.log("Debugging:");
-  error("Debug");
+  error(swipeIndex);
+  warn(swipes);
   warn(conv);
   res.send("Debug log complete");
 
@@ -241,7 +250,8 @@ async function getModals(){
 
 
 
-async function sendMessage(query, model, miD=null, incrementIndex=true){
+async function sendMessage(query, model, miD=null){
+
   const userInp = {role: "user", content: query}
   prevModal = model;
 
@@ -281,10 +291,7 @@ async function sendMessage(query, model, miD=null, incrementIndex=true){
   conv.push(mess);
 
   
-  if(incrementIndex){
-    index++
-    addToSwipe(index, botMessage);
-  }
+  addToSwipe(botMessage);
   return botMessage;
   
 
@@ -350,81 +357,49 @@ async function refresh(model){
   conv.pop();
 
   // generate new response
-  const botResp = await sendMessage(prevQuery, model, "<Refresh>", false);
+  const botResp = await sendMessage(prevQuery, model, "<Refresh>");
 
   // increase swipe index
   swipeIndex++;
-
-  // store new response
-  addToSwipe(index, botResp.content);
-
 }
 
 // ==============================================
 // Swipe functions
 // ==============================================
-function addLevel(){
-  swipes.push([index, []]);
-}
-function addToSwipe(index, text){
 
-  swipes.forEach(element => {
 
-    if(element[0] == index){
-      element[1].push(text);
-    }
-  });
-
-}
-
+// Swiping forward should increase swipe index and return the message at that index
 function swipeForward(){
-  
-  let prevBotResp;
-
-  swipeIndex++;
-
-  swipes.forEach(element => {
-    
-    if(element[0] == index){
-      prevBotResp = element[1][swipeIndex];
-    }
-  });
-  if (prevBotResp == undefined || prevBotResp.length < 1){
-    warn("Unable to swipe forwards | prevBotResp is empty: " + prevBotResp);
+  if(swipeIndex === swipes.length - 1){
+    warn("Attempted swipe out of range");
     return "<ERR>";
   }
-
-
-  conv[conv.length-1]["botResp"] = prevBotResp;
-  return prevBotResp;
-
-
-}
-function swipeBackwards(){
+  swipeIndex++;
   
-  let prevBotResp;
+  conv[conv.length - 1][1]["Assistant"] = swipes[swipeIndex];
+  return swipes[swipeIndex];
+}
 
+// Swiping backwards should decrease swipe index and return the message at that index
+function swipeBackwards(){
+  if(swipeIndex === 0){
+    warn("Attempted swipe out of range");
+    return "<ERR>";
+  }
   swipeIndex--;
 
-  swipes.forEach(element => {
-    
-    if(element[0] == index){
-      prevBotResp = element[1][swipeIndex];
-    }
-  });
-  if (prevBotResp == undefined || prevBotResp.length < 1){
-    warn("Unable to swipe backwards | prevBotResp is empty: " + prevBotResp);
-    return "<ERR>";
-  }
-
-
-  conv[conv.length-1]["botResp"] = prevBotResp;
-  return prevBotResp;
+  conv[conv.length - 1][1]["Assistant"] = swipes[swipeIndex];
+  return swipes[swipeIndex];
 }
 
-1
+// Add to swipe 
+function addToSwipe(message){
+  swipes.push(message); 
+}
 
-
+function clearSwipes(){
+  swipes = [];
+}
 
 
 
@@ -516,7 +491,7 @@ function clearChat(removeAmount){
     if(removeAmount == 0){
       conv = [];
       swipeIndex = 0;
-      swipes = [];
+      clearSwipes();
     } else {
       conv = conv.slice(index - removeAmount);
       swipeIndex = swipeIndex - removeAmount;

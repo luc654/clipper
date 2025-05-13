@@ -44,7 +44,7 @@ async function prevMessage() {
 }
 
 async function forwardMessage() {
-    const response = await fetch(`http://${ip}/forward`);
+    const response = await fetch(`http://${ip}/api/forward`);
     if (!response.ok) throw new Error(`Response status: ${response.status}`);
     const message = await response.text();
     removeLastMessage();
