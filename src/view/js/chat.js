@@ -101,11 +101,12 @@ function setName(name, person) {
     userName = name;
 
     if (person == "Assistant") {
-        console.log(name);
+        charactarName = name;
         document.querySelectorAll('.bot-info-name-holder').forEach((elem) => {
             elem.innerHTML = name;
         });
     } else if (person == "User") {
+        userName = name;
         document.querySelectorAll('.user-info-name-holder').forEach((elem) => {
             elem.innerHTML = name;
         });
