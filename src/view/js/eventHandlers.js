@@ -30,14 +30,3 @@ window.onload = function() {
 
 
 
-function adjustHeight() {
-    const textarea = document.getElementById('query');
-    const textAreaWrapper = document.getElementById('textAreaWrapper');
-
-    if (textarea.value.length === 0) {
-        textAreaWrapper.style.height = "56px";
-    } else {
-    this.style.height = 'auto';
-    textAreaWrapper.style.height = textarea.scrollHeight + 'px';
-    }
-    }
