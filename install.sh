@@ -101,14 +101,15 @@ npm install >/dev/null 2>&1
 echo -ne '#############             (76%) | Updating Files              \r'
 
 # Set secret thing ip
-ip=ifconfig | grep "inet" | grep "bro" | awk '{print $2}'
-if [ -n ip ]; then
-ip="$ip":3000
-mv secret-example.js ./secret.js
-set_var IPADDRESS "$ip" secret.js
+ip=$(ifconfig | grep "inet" | grep "bro" | awk '{print $2}')
+
+if [ -n "$ip" ]; then
+
+touch secret.js
+echo IPADDRESS = "$ip":3000 >> secret.js
 
 rm index.mjs.bak >/dev/null 2>&1
-rm secret.js.bak >/dev/null 2>&1
+rm secret-example.js >/dev/null 2>&1
 echo -ne '#######################   (100%)'
 else 
 echo -ne '#######################   (100%)'
