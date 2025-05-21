@@ -3,6 +3,20 @@
 echo ======================
 echo Clipper install script
 echo =====================
+
+
+packExist () {
+    if which "$1" >/dev/null 2>&1; then
+        :
+    else
+        echo "Package $1 does not exist but is required. Please install $1 and relaunch this script"
+        exit 0
+    fi
+}
+packExist npm
+packExist ollama
+
+
 echo Install clipper in current path? Y/n
 
 INSTALLPATH=""
@@ -35,3 +49,10 @@ echo Installing in "${INSTALLPATH}"
 
 
 
+cd "$INSTALLPATH"
+
+git clone https://github.com/luc654/clipper
+
+cd "clipper"
+
+npm install
