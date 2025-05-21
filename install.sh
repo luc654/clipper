@@ -106,7 +106,7 @@ ip=$(ifconfig | grep "inet" | grep "bro" | awk '{print $2}')
 if [ -n "$ip" ]; then
 
 touch secret.js
-echo IPADDRESS = "$ip":3000 >> secret.js
+echo IPADDRESS = \`"$ip":3000\` >> secret.js
 
 rm index.mjs.bak >/dev/null 2>&1
 rm secret-example.js >/dev/null 2>&1
