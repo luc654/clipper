@@ -20,7 +20,10 @@ async function clear() {
     const response = await fetch(`http://${ip}/api/clear?index=0`).then(res => res.text())
     .then(data => console.log(data))
     .catch(err => console.error("Fetch failed:", err));
-    prependChatDivider();
+    // Hardclear checks if the clear button has been pressed twice.
+    if(!hardClear()){
+        prependChatDivider();
+    }
 }
 
 async function refreshMessage() {

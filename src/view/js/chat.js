@@ -50,11 +50,22 @@ function appendMessage(content, id){
 
 function prependChatDivider(){
     const linebreak = document.createElement('div');
+    linebreak.id = "linebreak";
             linebreak.classList = 'w-full rounded-full  bg-[#2F3335] px-4 py-2 mt-12 mb-4';
 
             document.getElementById('chatbox').prepend(linebreak);
 };
 
+
+function hardClear(){
+    if(document.getElementById('chatbox').firstChild.id == "linebreak"){
+        console.log("Nuke chat");
+        document.getElementById('chatbox').innerHTML = "";
+        return true;
+    } else {
+        return false;
+    }
+}
 function styleInp(e){
     const textarea = document.getElementById('query');
     const textAreaWrapper = document.getElementById('textAreaWrapper');
