@@ -20,7 +20,7 @@ let debug = true;
 // Current message index
 let index = 0;
 
-// Format {index, ["sender", text],["sender", text]}
+// Format {index, ["User", text],["Assistant", text]}
 let conv = [];
 
 // Shuts down server if > maxConnect
@@ -180,8 +180,18 @@ app.get('/api/clear', async (req, res) => {
     console.log("Error clearing chat.");
     res.status(404).json({message: `Failed to clear chat? index: ${index}`});
   }
-
 });
+
+app.get('api/change', async (req, res) => {
+  const {phrase, correction} = req.query;
+  if(verify(phrase) && verify(correction)){
+    if (change(phrase, correction)){
+    res.status(200).json({ message: 'Change successfull'});
+    } else {
+    res.status(404).json({ message: 'Error while attempting to change text.'});
+    }
+  }
+})
 
 // ==============================================
 // WebSockets
@@ -328,6 +338,13 @@ async function dbg(text){
 }
 
 
+async function verify(text){
+  if(text.length > 0){
+    return true;
+  }
+  error("Verification failed, text does not exist.")
+  return false;
+}
 
 
 // ==============================================
@@ -512,4 +529,25 @@ function clearChat(removeAmount){
 
 function emergencyShutdown(){
   process.exit(1);
+}
+
+
+// ==============================================
+// Rename things function
+// ==============================================
+
+function change(phrase, correction){
+  const oldConv = conv;
+  try {
+    conv.forEach((elem) => {
+      elem["User"].replaceAll(phrase, correction);
+      elem["Assistant"].replaceAll(phrase, correction);
+  
+    });
+  } catch (error) {
+    conv = oldConv;
+    error(`Error while changing phrase. ${error}`);
+    return false;
+  }
+  return true;
 }
