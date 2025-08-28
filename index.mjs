@@ -99,7 +99,7 @@ app.get('/api/refresh', async (req, res) => {
 app.get('/api/backwards', async (req, res) => {
   const newMessage = swipeBackwards();
   if (newMessage == "<ERR>"){
-    res.sendStatus('500');
+    res.status(705).send("<Stop>");
   } else {
     res.send(newMessage);
   }
@@ -108,7 +108,8 @@ app.get('/api/backwards', async (req, res) => {
 app.get('/api/forward', async (req, res) => {
   const newMessage = swipeForward();
   if (newMessage == "<ERR>"){
-    res.sendStatus('500');
+    res.status(705).send("<Stop>");
+
   } else {
     res.send(newMessage);
   }

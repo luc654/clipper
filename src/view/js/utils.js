@@ -45,3 +45,22 @@ async function showModels() {
         console.log(error);
     }
 }
+
+
+
+const codes = [
+    [705, "Attempted to swipe out of range"]
+]
+function verifyStatuscodes(fetchedResponse) {
+    if(fetchedResponse.ok){return true;}
+    for (const code of codes) {
+        if (fetchedResponse.status == code[0]) {
+            console.log(code[1]);
+            return false;
+        }
+    }
+    if (!fetchedResponse.ok) {
+        console.warn(`Response status: ${fetchedResponse.status}`);
+        return false;
+    }
+}

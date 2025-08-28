@@ -41,7 +41,7 @@ async function refreshMessage() {
 
 async function prevMessage() {
     const response = await fetch(`http://${ip}/api/backwards`);
-    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    if(!verifyStatuscodes(response)) return;
     const message = await response.text();
     removeLastMessage();
     addMessageBot(message);
@@ -49,7 +49,7 @@ async function prevMessage() {
 
 async function forwardMessage() {
     const response = await fetch(`http://${ip}/api/forward`);
-    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    if(!verifyStatuscodes(response)) return;
     const message = await response.text();
     removeLastMessage();
     addMessageBot(message);
