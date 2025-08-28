@@ -2,7 +2,9 @@ const profilePic = 'img/profilePic.jpg'
 let chatId = 0;
 
 function addMessageUser(text) {
+    text = text.replaceAll("\n", "<br>");
     prependMessage(text, userName, profilePic, 'end');
+
 }
 
 function addMessageBot(text) {
@@ -45,6 +47,7 @@ function prependMessage(text, user, pic, alignment) {
 
 function appendMessage(content, id){
     if(!id) {id = chatId - 1};
+    content.replace("")
     document.getElementById(id).innerHTML += content;
 }
 

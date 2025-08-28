@@ -24,7 +24,7 @@ let index = 0;
 let conv = [];
 
 // Shuts down server if > maxConnect
-const maxConnect = 1;
+const maxConnect = 10;
 
 // Format {[Level index, ["text", "text"]]}
 let swipes = []

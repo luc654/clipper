@@ -4,6 +4,7 @@ async function send() {
     let query = document.getElementById('query').value;
     let model = document.getElementById('model').value;
     if (query.trim().length < 1) return;
+    query = query.replaceAll("\n", "<br>");
     document.getElementById('query').value = "";
     addMessageUser(query);
     resetTextArea();
