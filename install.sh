@@ -113,8 +113,9 @@ rm secret-example.js >/dev/null 2>&1
 echo -ne '#######################   (100%)'
 else 
 echo -ne '#######################   (100%)'
+echo
 echo Minor accident, failed to update secret-example.js.
-echo Please follow the instructions in the file itself once the setup is over.
+echo Please follow the instructions in the file itself once the setup is over. You can continue with the setup
 fi
 
 echo 
