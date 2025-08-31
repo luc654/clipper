@@ -78,6 +78,7 @@ app.get('/api/post', async (req, res) => {
   clearSwipes();
   try {
     await sendMessage(query, model);
+    resetSwipes();
   prevQuery = query;
 } catch (e) {
   error(e);
@@ -135,6 +136,8 @@ app.get('/api/debug', (req, res) => {
   error(swipeIndex);
   warn(swipes);
   warn(conv);
+  warn(swipeIndex);
+  warn(index);
   res.send("Debug log complete");
 
 });
@@ -420,6 +423,11 @@ function clearSwipes(){
 }
 
 
+// Clear the swipeIndex
+function resetSwipes(){
+  swipeIndex = 0;
+}
+
 
 // ==============================================
 // Chat import
@@ -508,7 +516,7 @@ function clearChat(removeAmount){
   try {
     if(removeAmount == 0){
       conv = [];
-      swipeIndex = 0;
+      resetSwipes();
       clearSwipes();
     } else {
       conv = conv.slice(index - removeAmount);
