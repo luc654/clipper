@@ -1,14 +1,10 @@
 import ollama from 'ollama'
-import { config } from 'dotenv';
 import express, { query, response } from 'express';
 import fs, { copyFileSync, link } from 'fs';
 import ip from "ip";
 import multer from "multer";
 import cors from "cors";
-import { WebSocket } from 'ws';
 import { WebSocketServer } from 'ws';
-import { json, text } from 'stream/consumers';
-import { normalize } from 'path';
 
 // ==============================================
 // Global variables
@@ -24,7 +20,7 @@ let index = 0;
 let conv = [];
 
 // Shuts down server if > maxConnect
-const maxConnect = 10;
+const maxConnect = 1;
 
 // Format {[Level index, ["text", "text"]]}
 let swipes = []
